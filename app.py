@@ -1,6 +1,9 @@
 """Module adding CLI subparsers together."""
 
 import datetime
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 
 def test() -> datetime.datetime:
