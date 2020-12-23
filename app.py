@@ -1,12 +1,48 @@
-"""Module adding CLI subparsers together."""
+"""File for defining BotBlox CLI."""
 
+import argparse
 import time
 import logging
+import sys
 
 import serial
 from serial.tools import list_ports
 
+from vlan_config import vlan_create_configuration
+
 logging.basicConfig(level=logging.DEBUG)
+
+def main_cli() -> None:
+    """Define all cli parser and subparsers here"""
+    parser = argparse.ArgumentParser(
+        description='CLI for configuring SwitchBlox managed settings',
+        epilog='Please open an issue on https://github.com/botblox/botblox-manager-software/ if you think there is a problem',
+    )
+    subparsers = parser.add_subparsers(
+        title='Individual group commands for each configuration',
+        description='Please choose a certain command',
+        required=True,
+    )
+
+    vlan_parser = subparsers.add_parser(
+        'vlan',
+        help='Configure the ports to be in VLAN groups',
+    )
+    vlan_parser.add_argument(
+        '-g',
+        '--group',
+        action='append',
+        type='int',
+        choices=[1,2,3,4,5],
+        required=True,
+    )
+    vlan_parser.set_defaults(execute=vlan_create_configuration)
+
+    if len(sys.argv) <= 1:
+        sys.argv.append('--help')
+
+    args = parser.parse_args()
+    args.execute()
 
 
 def test_pyserial(
@@ -44,4 +80,8 @@ def test_pyserial(
     ser.close()
 
 
-test_pyserial()
+# test_pyserial()
+
+
+if __name__ == 'main':
+    main_cli()
