@@ -13,7 +13,7 @@ vlan_miim_register_map = {
         'reg': 16,
         'size': 8,
         'offset': 0,
-        'sys_default': 0,
+        'sys_default': 0xFF,
         'data': 0,
     },
     2: {
@@ -22,7 +22,7 @@ vlan_miim_register_map = {
         'reg': 16,
         'size': 8,
         'offset': 8,
-        'sys_default': 0,
+        'sys_default': 0xFF,
         'data': 0,
     },
     3: {
@@ -31,7 +31,7 @@ vlan_miim_register_map = {
         'reg': 17,
         'size': 8,
         'offset': 0,
-        'sys_default': 0,
+        'sys_default': 0xFF,
         'data': 0,
     },
     4: {
@@ -40,7 +40,7 @@ vlan_miim_register_map = {
         'reg': 18,
         'size': 8,
         'offset': 0,
-        'sys_default': 0,
+        'sys_default': 0xFF,
         'data': 0,
     },
     5: {
@@ -49,7 +49,7 @@ vlan_miim_register_map = {
         'reg': 18,
         'size': 8,
         'offset': 8,
-        'sys_default': 0,
+        'sys_default': 0xFF,
         'data': 0,
     },
 }
@@ -150,7 +150,11 @@ def update_command(
     :return: Updated command with data regarding the current port
     :rtype: List
     """
-    port_data = vlan_miim_register_map[port]['data']
+    port_data = 0
+    if vlan_miim_register_map[port]['data'] != 0:
+        port_data = vlan_miim_register_map[port]['data']
+    else:
+        port_data = vlan_miim_register_map[port]['sys_default']
     port_offset = vlan_miim_register_map[port]['offset']
 
     command_to_update[2] = command_to_update[2] | ((port_data << port_offset) & 0xFF)
@@ -170,7 +174,11 @@ def create_command(
     :return: Newly created command
     :rtype: List
     """
-    port_data = vlan_miim_register_map[port]['data']
+    port_data = 0
+    if vlan_miim_register_map[port]['data'] != 0:
+        port_data = vlan_miim_register_map[port]['data']
+    else:
+        port_data = vlan_miim_register_map[port]['sys_default']
     port_offset = vlan_miim_register_map[port]['offset']
 
     command = [
@@ -182,8 +190,35 @@ def create_command(
     return command
 
 
+def update_data(
+    data: List[List],
+    port: int,
+) -> List[List]:
+    """Update data commands for setting the VLAN configuration.
+
+    If this function is executed before the `vlan_miim_register_map` is filled out,
+    this will return system defaults
+
+    :param List[List] data: current list of commands
+    :param int port: physical port
+    :return: Command for physical port
+    :rtype: List[List]
+    """
+    is_present, index_in_data = is_command_already_present(data, port)
+
+    if is_present and index_in_data is not None:
+        command_to_update = data[index_in_data]
+        command_updated = update_command(command_to_update=command_to_update, port=port)
+        data[index_in_data] = command_updated
+    else:
+        command = create_command(port)
+        data.append(command)
+
+    return data
+
+
 def vlan_create_configuration(
-    groupings: List[List],
+    args: Tuple,
 ) -> List[List]:
     """Create parser data from user input.
 
@@ -193,12 +228,23 @@ def vlan_create_configuration(
 
     :example:
 
-    >>> groupings=[[1, 2], [3, 4]]
+    >>> args=(execute=<function>, group=[[1, 2], [3, 4]])
     >>> vlan_create_configuration(groupings)
     [[23, 16, 12, 12], [23, 17, 80, 0], [23, 18, 80, 0]]
+
+    >>> args=(execute=<function>, reset=True)
+    >>> vlan_create_configuraton(groupings)
     """
-    ports = list(vlan_binary_offset_map.keys())
     data = []
+    ports = list(vlan_binary_offset_map.keys())
+    try:
+        args.reset
+    except AttributeError:
+        groupings = args.group
+    else:
+        for port in ports:
+            data = update_data(data=data, port=port)
+        return data
 
     for port in ports:
         vlan_members = []
@@ -210,14 +256,6 @@ def vlan_create_configuration(
 
         create_vlan_parser_data_per_port(vlan_members=vlan_members, port=port)
 
-        is_present, index_in_data = is_command_already_present(data, port)
-
-        if is_present and index_in_data is not None:
-            command_to_update = data[index_in_data]
-            command_updated = update_command(command_to_update=command_to_update, port=port)
-            data[index_in_data] = command_updated
-        else:
-            command = create_command(port)
-            data.append(command)
+        data = update_data(data=data, port=port)
 
     return data

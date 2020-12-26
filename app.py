@@ -77,32 +77,45 @@ def main_cli() -> None:
         'vlan',
         help='Configure the ports to be in VLAN groups',
     )
-    vlan_parser.add_argument(
+
+    vlan_parser_group = vlan_parser.add_mutually_exclusive_group()
+    vlan_parser_group.add_argument(
         '-g',
         '--group',
         nargs='+',
         action='append',
         type=int,
         choices=[1, 2, 3, 4, 5],
-        required=True,
+        required=False,
+        help='''Define the VLAN member groups using port number,
+        i.e. --group 1 2 --group 3 4 puts makes Group A have
+        ports 1 and 2, and Group B have ports 3 and 4'''
     )
-    vlan_parser.set_defaults(execute=vlan_create_configuration)
+    vlan_parser_group.add_argument(
+        '-r',
+        '--reset',
+        action='store_true',
+        default=argparse.SUPPRESS,
+        help='''Reset the VLAN configuration to be as system default'''
+    )
+    vlan_parser_group.set_defaults(execute=vlan_create_configuration)
 
     if len(sys.argv) <= 1:
         sys.argv.append('--help')
 
     args = parser.parse_args()
-    data = args.execute(args.group)
+    data = args.execute(args)
+    print(data)
 
     # add stop command
     data.append([100, 0, 0, 0])
 
-    is_success = write_data_to_serial(data)
+    # is_success = write_data_to_serial(data)
 
-    if is_success:
-        logging.info('Successful configuration')
-    else:
-        logging.error('Failed to configure - check logs')
+    # if is_success:
+    #     logging.info('Successful configuration')
+    # else:
+    #     logging.error('Failed to configure - check logs')
 
 
 if __name__ == '__main__':
