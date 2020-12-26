@@ -110,12 +110,12 @@ def main_cli() -> None:
     # add stop command
     data.append([100, 0, 0, 0])
 
-    # is_success = write_data_to_serial(data)
+    is_success = write_data_to_serial(data)
 
-    # if is_success:
-    #     logging.info('Successful configuration')
-    # else:
-    #     logging.error('Failed to configure - check logs')
+    if is_success:
+        logging.info('Successful configuration')
+    else:
+        logging.error('Failed to configure - check logs')
 
 
 if __name__ == '__main__':
