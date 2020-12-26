@@ -84,13 +84,15 @@ def main_cli() -> None:
     args = parser.parse_args()
     data = args.execute(args.group)
 
+    # add stop command
+    data.append([100, 0, 0, 0])
+
     is_success = write_data_to_serial(data)
 
     if is_success:
         logging.info('Successful configuration')
     else:
         logging.error('Failed to configure - check logs')
-        
 
 
 def test_pyserial(
