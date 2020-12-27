@@ -10,10 +10,5 @@ WORKDIR /botblox
 
 ENV PATH /opt/conda/envs/env/bin:$PATH
 
-<<<<<<< HEAD
-CMD ["app.py"]
-ENTRYPOINT ["python"]
-=======
 # CMD ["app.py"]
 # ENTRYPOINT ["python"]
->>>>>>> efb9f3b0fc737cd1bfb0887c1f72177317797803
