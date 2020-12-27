@@ -11,6 +11,7 @@ from typing import (
 
 import serial
 
+from portmirror_config import portmirror_create_configuration
 from vlan_config import vlan_create_configuration
 
 logging.basicConfig(level=logging.DEBUG)
@@ -73,11 +74,11 @@ def main_cli() -> None:
         required=True,
     )
 
+    # VLAN CLI
     vlan_parser = subparsers.add_parser(
         'vlan',
         help='Configure the ports to be in VLAN groups',
     )
-
     vlan_parser_group = vlan_parser.add_mutually_exclusive_group()
     vlan_parser_group.add_argument(
         '-g',
@@ -100,21 +101,81 @@ def main_cli() -> None:
     )
     vlan_parser_group.set_defaults(execute=vlan_create_configuration)
 
+    # Port mirroring CLI
+    portmirror_parser = subparsers.add_parser(
+        'mirror',
+        help='Configure the ports to mirror traffic',
+    )
+    portmirror_parser_mutex_grouping = portmirror_parser.add_mutually_exclusive_group()
+    portmirror_parser_config_group = portmirror_parser_mutex_grouping.add_argument_group()
+
+    portmirror_parser_config_group.add_argument(
+        '-m',
+        '--mode',
+        nargs='?',
+        default='RX',
+        type=str,
+        choices=['RX', 'TX', 'RXorTX', 'RXandTX'],
+        required=False,
+        help='''Select the mirror mode during operation''',
+    )
+    portmirror_parser_config_group.add_argument(
+        '-M',
+        '--mirror-port',
+        nargs=1,
+        type=int,
+        choices=[1, 2, 3, 4, 5],
+        required=False,
+        default=5,
+        help='''Select the mirror port (default: port 5)''',
+    )
+    portmirror_parser_config_group.add_argument(
+        '-rx',
+        '--rx-port',
+        nargs='+',
+        type=int,
+        choices=[1, 2, 3, 4, 5],
+        required=any(mode in sys.argv for mode in ['RX', 'RXorTX', 'RXandTX']),
+        default=argparse.SUPPRESS,
+        help='''Select the source (receive) port to be mirrored''',
+    )
+    portmirror_parser_config_group.add_argument(
+        '-tx',
+        '--tx-port',
+        nargs='+',
+        type=int,
+        choices=[1, 2, 3, 4, 5],
+        required=any(mode in sys.argv for mode in ['TX', 'RXorTX', 'RXandTX']),
+        default=argparse.SUPPRESS,
+        help='''Select the destination (transmit) port to be mirrored''',
+    )
+    portmirror_parser_mutex_grouping.add_argument(
+        '-r',
+        '--reset',
+        action='store_true',
+        default=argparse.SUPPRESS,
+        help='Reset the Port mirroring configuration to default, this will turn port mirroring off'
+    )
+    portmirror_parser_mutex_grouping.set_defaults(execute=portmirror_create_configuration)
+
+
     if len(sys.argv) <= 1:
         sys.argv.append('--help')
 
     args = parser.parse_args()
     data = args.execute(args)
 
+    print(data)
+
     # add stop command
-    data.append([100, 0, 0, 0])
+    # data.append([100, 0, 0, 0])
 
-    is_success = write_data_to_serial(data)
+    # is_success = write_data_to_serial(data)
 
-    if is_success:
-        logging.info('Successful configuration')
-    else:
-        logging.error('Failed to configure - check logs')
+    # if is_success:
+    #     logging.info('Successful configuration')
+    # else:
+    #     logging.error('Failed to configure - check logs')
 
 
 if __name__ == '__main__':

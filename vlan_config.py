@@ -222,7 +222,7 @@ def vlan_create_configuration(
 ) -> List[List]:
     """Create parser data from user input.
 
-    :param List[List] groupings: each list element is a VLAN group and sub-elements are the port members.
+    :param Tuple args: command line arguments from user
     :return: list of commmands to be sent to the firmware
     :rtype: List[List]
 
@@ -234,6 +234,7 @@ def vlan_create_configuration(
 
     >>> args=(execute=<function>, reset=True)
     >>> vlan_create_configuraton(groupings)
+    [[23, 16, 255, 255], [23, 17, 255, 0], [23, 18, 255, 255]]
     """
     data = []
     ports = list(vlan_binary_offset_map.keys())
