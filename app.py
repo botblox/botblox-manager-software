@@ -105,7 +105,6 @@ def main_cli() -> None:
 
     args = parser.parse_args()
     data = args.execute(args)
-    print(data)
 
     # add stop command
     data.append([100, 0, 0, 0])
