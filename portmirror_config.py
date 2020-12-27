@@ -129,10 +129,6 @@ def update_command(
         option_data = portmirror_miim_register_map[option]['sys_default']
     option_offset = portmirror_miim_register_map[option]['offset']
 
-    print(option)
-    print(option_data)
-
-
     command_to_update[2] = command_to_update[2] | ((option_data << option_offset) & 0xFF)
     command_to_update[3] = command_to_update[3] | (((option_data << option_offset) & 0xFF00) >> 8) 
 
@@ -148,9 +144,6 @@ def create_command(
     else:
         option_data = portmirror_miim_register_map[option]['data']    
     option_offset = portmirror_miim_register_map[option]['offset']
-
-    print(option)
-    print(option_data)
 
     command = [
         portmirror_miim_register_map[option]['phy'],
