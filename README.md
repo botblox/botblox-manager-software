@@ -103,6 +103,10 @@ You'll need to install software that allows the running of containerized applica
 * Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your OS (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
 * Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and download and install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) if your device has USB 2.0 ports.
 
+_Important Note_
+
+Currently, `VirtualBox` has not been updated to run natively on Apple's latest hardware that uses the M-series processors so will be unable to download in the future. I am very interested in finding a solution for this. Please create an issue if this turns out to be a high demand problem and I will devote more time to finding a workaround. 
+
 ### Getting Started
 
 #### Linux
