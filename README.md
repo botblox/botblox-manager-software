@@ -82,7 +82,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Welcome to BotBlox Software. We designed this software to go along with our [firmware](https://github.com/botblox/botblox-manager-firmware) to allow our community of customers and developers to manually configure custom settings on BotBlox products, such as the SwitchBlox: our flagship Etheret switch. For a while now, our customers have requested that they want to be able to program VLAN membership, Quality-of-service, Port mirroring, etc on our products. This Software contains a containerized CLI application, written in Python 3.8, that will allow you to configure the SwitchBlox to perform certain managed functions in your application. The CLI runs in a docker container, allowing us to bundle the dependencies of the application with the application source code itself, without having to worry about host OS. This application was designed with developers in mind, we wanted to make developing features for this application as simple as possible. We very much encourage people to point out improvements, bugs or missing features they want implemented as we want to be very responsive to the needs of the developer and customer.   
+Welcome to BotBlox Software. We designed this software to go along with our [firmware](https://github.com/botblox/botblox-manager-firmware) to allow our community of customers and developers to manually configure custom settings on BotBlox products, such as the SwitchBlox: our flagship Ethernet switch. For a while now, our customers have requested that they want to be able to program VLAN membership, Quality-of-service, Port mirroring, etc on our products. This Software contains a containerized CLI application, written in Python 3.8, that will allow you to configure the SwitchBlox to perform certain managed functions in your application. The CLI runs in a docker container, allowing us to bundle the dependencies of the application with the application source code itself, without having to worry about application environment setup on Host OS. This application was designed with developers in mind; to make developing features for this application as simple as possible. We very much encourage people to point out improvements, bugs or missing features they want implemented as we want to be very responsive to the needs of both the developer and customer.   
 
 
 ### Built With
@@ -97,10 +97,10 @@ Welcome to BotBlox Software. We designed this software to go along with our [fir
 You'll need to install software that allows the running of containerized applications, with permission to access a USB device (in this case, a USB-to-UART converter).
 
 #### Linux
-* Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) (called 'Docker') for your given Linux distribution (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
+* Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your given Linux distribution (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
 
 #### MacOS or Windows
-* Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) (called 'Docker') for your given Linux distribution (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
+* Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your OS (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
 * Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and download and install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) if your device has USB 2.0 ports.
 
 ### Getting Started
@@ -129,6 +129,10 @@ To get a local copy up and running follow these simple steps.
     python app.py --help
 ```
 
+_Important Note_
+
+Currently, the lead developer [Aaron Elijah](https://github.com/AaronElijah) does not develop on Linux OS so he hasn't verified that this will run 'as is'. If there are any developers who are interested in this project and develop with a Linux Host OS, please be in contact to verify the installation and running steps work as is or if any changes need to be made. 
+
 #### MacOS and Windows
 To get a local copy up and running follow these simple steps.
 1. Clone this repo in the directory 
@@ -142,7 +146,7 @@ To get a local copy up and running follow these simple steps.
 
 _Important Note_
 
-It is not trivial to grant device access to the Docker Daemon when running on MacOS or Windows as the Host OS as the Docker Daemon only runs natively on Linux, which means that the Docker Daemon runs inside of a VM (`hyperkit` for MacOS and `Microsoft Hyper-V`) when being used on MacOS or Windows. Unfortunately, both VMs do not support USB forwarding so it is impossible to allow the container access to the USB-to-UART converter device port. However, this can be circumvented by instead running the docker daemon inside of a VM that we run inside VirtualBox and simply point the docker client so that it sends API requests to the docker daemon running that custom VM. We can ensure that this VM has USB device filtering enabled, thus granting the container access. 
+It is not trivial to grant device access to the Docker Daemon when running on MacOS or Windows as the Host OS as the Docker Daemon only runs natively on Linux, which means that the Docker Daemon runs inside of a VM (`hyperkit` for MacOS and `Microsoft Hyper-V`) when being used on MacOS or Windows. Unfortunately, both VMs do not support USB forwarding so it is impossible to allow the container access to the USB-to-UART converter device port. However, this can be circumvented by instead running the docker daemon inside of a VM that we run inside VirtualBox and simply point the docker client so that it sends API requests to the docker daemon running that custom VM. We can ensure that this VM has USB device filtering enabled, thus granting the container access. Whilst this extra access does grant the container more access to the host hardware than by default, it is quite limited in scope to a single port device and this software is intended to be used only when programming the device (the device can be left in production equipment untouched afterwards).
 
 3. (One time) Create the VM which will run the `docker daemon` inside and name it `default`
 ```sh
@@ -162,7 +166,7 @@ Do either Steps 5. or 6. before moving to 7.
 5e. Check `Enable USB Controller` on.
 5f. Open the 'Add USB Device Filter' icon and select the USB-to-UART converter device
 5g. Click `Ok`
-5h. Back in the terminall shell inside the project directory, run 
+5h. Back in the terminal shell inside the project directory, run 
 ```sh
     docker-machine start
 ```
