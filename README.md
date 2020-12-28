@@ -204,6 +204,10 @@ Note: this will only export environment variables locally in the shell, if you w
 ```sh
     python app.py --help
 ```
+11. When done, reset local environment variables to reset docker environment
+```sh
+    eval $(docker-machine env -u)
+```
 
 <!-- USAGE EXAMPLES -->
 ## Usage
