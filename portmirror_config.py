@@ -1,9 +1,9 @@
 """Define helper functions to convert the user port mirror configuration to commands for the firmware."""
 
 from typing import (
-    Tuple,
     List,
     Optional,
+    Tuple,
     Union,
 )
 
@@ -19,7 +19,7 @@ portmirror_miim_register_map = {
     },
     'mode': {
         'name': 'PORT_MIRROR_MODE',
-        'phy': 20, 
+        'phy': 20,
         'reg': 3,
         'size': 2,
         'offset': 13,
@@ -34,7 +34,7 @@ portmirror_miim_register_map = {
     },
     'rx_port': {
         'name': 'SEL_RX_PORT_MIRROR',
-        'phy': 20, 
+        'phy': 20,
         'reg': 3,
         'size': 8,
         'offset': 0,
@@ -45,7 +45,7 @@ portmirror_miim_register_map = {
             2: 0b00001000,
             3: 0b00010000,
             4: 0b01000000,
-            5: 0b10000000, 
+            5: 0b10000000,
         },
     },
     'mirror_port': {
@@ -77,7 +77,7 @@ portmirror_miim_register_map = {
             2: 0b00001000,
             3: 0b00010000,
             4: 0b01000000,
-            5: 0b10000000, 
+            5: 0b10000000,
         },
     },
 }
@@ -91,14 +91,15 @@ def create_portmirror_parser_data_per_option(
 
     For a given option for port mirror, link the user input on the command line with
     the given choices corresponding to that input from the `portmirror_miim_register_map`.
-    Some choices for options allow multiple choices to be selected and so each choice must 
+    Some choices for options allow multiple choices to be selected and so each choice must
     be bitwise 'OR'-ed with each other to create the parser data for that option.
-    For 'enable', given that no user explicity specifies that as an arg, it is automatically 
+    For 'enable', given that no user explicity specifies that as an arg, it is automatically
     assigned the apprioriate value for activated port mirroring.
 
     :param str option: individual port mirror option
-    :param Optional[Union[List[int], str, int]] settings: Can be a string relating to the port mirror mode (i.e. 'RX'), 
-        int relating to mirror_port (i.e. 1) or List[int] of multiple choices for other options (i.e. [1, 2] for `tx_port`)
+    :param Optional[Union[List[int], str, int]] settings: Can be a string relating to the port mirror mode (i.e. 'RX'),
+        int relating to mirror_port (i.e. 1) or
+        List[int] of multiple choices for other options (i.e. [1, 2] for `tx_port`)
     :rtype: None
     """
     if option == 'enable':
@@ -117,7 +118,7 @@ def create_portmirror_parser_data_per_option(
             data = data | setting_data
     else:
         data = individual_setting_data[0]
-    
+
     portmirror_miim_register_map[option]['data'] = data
 
 
@@ -146,7 +147,9 @@ def is_command_already_present(
     """
     if data:
         for index_in_data, command in enumerate(data):
-            if portmirror_miim_register_map[option]['phy'] == command[0] and portmirror_miim_register_map[option]['reg'] == command[1]:
+            is_command_with_same_phy = portmirror_miim_register_map[option]['phy'] == command[0]
+            is_command_with_same_reg = portmirror_miim_register_map[option]['reg'] == command[1]
+            if is_command_with_same_phy and is_command_with_same_reg:
                 return (True, index_in_data)
 
     return (False, None)
@@ -174,10 +177,10 @@ def update_command(
     option_offset = portmirror_miim_register_map[option]['offset']
 
     command_to_update[2] = command_to_update[2] | ((option_data << option_offset) & 0xFF)
-    command_to_update[3] = command_to_update[3] | (((option_data << option_offset) & 0xFF00) >> 8) 
+    command_to_update[3] = command_to_update[3] | (((option_data << option_offset) & 0xFF00) >> 8)
 
     return command_to_update
-  
+
 
 def create_command(
     option: str,
@@ -186,7 +189,7 @@ def create_command(
     """Create a new command with PHY and REG plus two bytes of command data.
 
     Use the `portmirror_miim_register_map` to create the command.
-    If reset is defined in user command line arguments, then we reset the 
+    If reset is defined in user command line arguments, then we reset the
     port mirror to be system defaults. Elsewise use data in the
     `portmirror_miim_register_map`.
 
@@ -194,11 +197,10 @@ def create_command(
     :return: New created command
     :rtype: List
     """
-
     if reset:
         option_data = portmirror_miim_register_map[option]['sys_default']
     else:
-        option_data = portmirror_miim_register_map[option]['data']    
+        option_data = portmirror_miim_register_map[option]['data']
     option_offset = portmirror_miim_register_map[option]['offset']
 
     command = [
@@ -225,7 +227,6 @@ def update_data(
     :return: Command for physical port
     :rtype: List[List]
     """
-
     is_present, index_in_data = is_command_already_present(data, option)
 
     if is_present and index_in_data is not None:
@@ -250,18 +251,19 @@ def portmirror_create_configuration(
 
     :example:
 
-    >>> args=Namespace(execute=<function portmirror_create_configuration at {pointer}>, mirror_port=[4], mode='RXandTX', rx_port=[1, 2], tx_port=[3, 5])
+    >>> args=Namespace(execute=<function portmirror_create_configuration at {pointer}>,
+                       mirror_port=[4], mode='RXandTX', rx_port=[1, 2], tx_port=[3, 5])
     >>> portmirror_create_configuration(args)
     [[20, 3, 12, 192], [20, 4, 144, 192]]
 
-    >>> args=Namespace(execute=<function portmirror_create_configuration at {pointer}>, mirror_port=5, mode='RX', reset=True)
+    >>> args=Namespace(execute=<function portmirror_create_configuration at {pointer}>,
+                       mirror_port=5, mode='RX', reset=True)
     >>> portmirror_create_configuration(args)
     [[20, 3, 1, 0], [20, 4, 1, 224]]
     """
-    print(args)
     data = []
     mirror_options = list(portmirror_miim_register_map.keys())
-    try: 
+    try:
         args.reset
     except AttributeError:
         args_dict = vars(args)

@@ -10,7 +10,6 @@ from typing import (
 )
 
 import serial
-
 from portmirror_config import portmirror_create_configuration
 from vlan_config import vlan_create_configuration
 
@@ -158,24 +157,21 @@ def main_cli() -> None:
     )
     portmirror_parser_mutex_grouping.set_defaults(execute=portmirror_create_configuration)
 
-
     if len(sys.argv) <= 1:
         sys.argv.append('--help')
 
     args = parser.parse_args()
     data = args.execute(args)
 
-    print(data)
-
     # add stop command
-    # data.append([100, 0, 0, 0])
+    data.append([100, 0, 0, 0])
 
-    # is_success = write_data_to_serial(data)
+    is_success = write_data_to_serial(data)
 
-    # if is_success:
-    #     logging.info('Successful configuration')
-    # else:
-    #     logging.error('Failed to configure - check logs')
+    if is_success:
+        logging.info('Successful configuration')
+    else:
+        logging.error('Failed to configure - check logs')
 
 
 if __name__ == '__main__':
