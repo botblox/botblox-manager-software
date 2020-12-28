@@ -66,7 +66,6 @@
     <li>
       <a href="#installation">Installation</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#getting-started">Getting Started</a></li>
       </ul>
     </li>
@@ -142,6 +141,7 @@ To get a local copy up and running follow these simple steps.
 ```
 
 _Important Note_
+
 It is not trivial to grant device access to the Docker Daemon when running on MacOS or Windows as the Host OS as the Docker Daemon only runs natively on Linux, which means that the Docker Daemon runs inside of a VM (`hyperkit` for MacOS and `Microsoft Hyper-V`) when being used on MacOS or Windows. Unfortunately, both VMs do not support USB forwarding so it is impossible to allow the container access to the USB-to-UART converter device port. However, this can be circumvented by instead running the docker daemon inside of a VM that we run inside VirtualBox and simply point the docker client so that it sends API requests to the docker daemon running that custom VM. We can ensure that this VM has USB device filtering enabled, thus granting the container access. 
 
 3. (One time) Create the VM which will run the `docker daemon` inside and name it `default`
