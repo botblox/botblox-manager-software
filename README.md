@@ -35,7 +35,7 @@
     <img src="images/logo.png" alt="Logo" width="160" height="160">
   </a>
 
-  <h3 align="center">BotBlox Firmware</h3>
+  <h3 align="center">BotBlox software</h3>
 
   <p align="center">
     Software created by BotBlox to configure settings on our products
@@ -45,9 +45,9 @@
     <br />
     <a href="https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview">View Demo</a>
     ·
-    <a href="https://github.com/botblox/botblox-manager-firmware/issues">Report Bug</a>
+    <a href="https://github.com/botblox/botblox-manager-software/issues">Report Bug</a>
     ·
-    <a href="https://github.com/botblox/botblox-manager-firmware/issues">Request Feature</a>
+    <a href="https://github.com/botblox/botblox-manager-software/issues">Request Feature</a>
   </p>
 </p>
 
@@ -80,7 +80,6 @@
 </details>
 
 
-
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
@@ -104,16 +103,6 @@ You'll need to install software that allows the running of containerized applica
 #### MacOS or Windows
 * Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) (called 'Docker') for your given Linux distribution (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
 * Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and download and install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) if your device has USB 2.0 ports.
-
-
-
-
-1) 
-
-2) Ensure Docker Desktop (or equivalent) is running.
-3) 
-
-This is not trivial as the Docker Daemon only runs natively on Linux, which means that the Docker Daemon runs inside of a VM (`hyperkit` for MacOS and `Microsoft Hyper-V`) when being used on MacOS or Windows as the host OS. Unfortunately, `hyperkit` does not support USB forwarding so it is impossible to allow the container priveldged access to the USB-to-UART converter.
 
 ### Getting Started
 
@@ -151,6 +140,10 @@ To get a local copy up and running follow these simple steps.
 ```sh
     cd /path/to/project/dir
 ```
+
+_Important Note_
+It is not trivial to grant device access to the Docker Daemon when running on MacOS or Windows as the Host OS as the Docker Daemon only runs natively on Linux, which means that the Docker Daemon runs inside of a VM (`hyperkit` for MacOS and `Microsoft Hyper-V`) when being used on MacOS or Windows. Unfortunately, both VMs do not support USB forwarding so it is impossible to allow the container access to the USB-to-UART converter device port. However, this can be circumvented by instead running the docker daemon inside of a VM that we run inside VirtualBox and simply point the docker client so that it sends API requests to the docker daemon running that custom VM. We can ensure that this VM has USB device filtering enabled, thus granting the container access. 
+
 3. (One time) Create the VM which will run the `docker daemon` inside and name it `default`
 ```sh
     docker-machine create -d virtualbox default
@@ -173,7 +166,6 @@ Do either Steps 5. or 6. before moving to 7.
 ```sh
     docker-machine start
 ```
-
 6a. Enable USB filtering in VM running docker daemon (if you have VirtualBox extension pack installed)
 ```sh
     vboxmanage modifyvm default --usbehci on
@@ -187,7 +179,6 @@ For example, my personal setup uses.
 ```sh
     vboxmanage usbfilter add 0 --target default --name 'FTDI FT232R USB UART' --vendorid 0x0403 --productid 0x6001
 ```
-
 7. Export the environment variables used to tell Docker Client to use the new VM to send API requests to the docker daemon, instead of native mode. 
 ```sh
     eval $(docker-machine env default)
@@ -211,13 +202,13 @@ Note: this will only export environment variables locally in the shell, if you w
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+_For more examples, please refer to the [Documentation](https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview)_
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
-See the [open issues](https://github.com/botblox/botblox-manager-firmware/issues) for a list of proposed features (and known issues).
+See the [open issues](https://github.com/botblox/botblox-manager-software/issues) for a list of proposed features (and known issues).
 
 
 <!-- CONTRIBUTING -->
@@ -238,9 +229,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 <!-- CONTACT -->
 ## Contact
 
-BotBlox email - [Contact here](mailto:josh@kapek.org)
-
-Project Link: [https://github.com/botblox/botblox-manager-firmware](https://github.com/botblox/botblox-manager-firmware)
+Project Link: [https://github.com/botblox/botblox-manager-software](https://github.com/botblox/botblox-manager-software)
 
 
 <!-- ACKNOWLEDGEMENTS -->
@@ -250,16 +239,16 @@ Project Link: [https://github.com/botblox/botblox-manager-firmware](https://gith
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors-anon/botblox/botblox-manager-firmware?style=for-the-badge
-[contributors-url]: https://github.com/botblox/botblox-manager-firmware/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/botblox/botblox-manager-firmware?style=for-the-badge
-[forks-url]: https://github.com/botblox/botblox-manager-firmware/network/members
-[stars-shield]: https://img.shields.io/github/stars/botblox/botblox-manager-firmware?style=for-the-badge
-[stars-url]: https://github.com/botblox/botblox-manager-firmware/stargazers
-[issues-shield]: https://img.shields.io/github/issues/botblox/botblox-manager-firmware?style=for-the-badge
-[issues-url]: https://github.com/botblox/botblox-manager-firmware/issues
-[license-shield]: https://img.shields.io/github/license/botblox/botblox-manager-firmware?style=for-the-badge
-[license-url]: https://github.com/botblox/botblox-manager-firmware/blob/main/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors-anon/botblox/botblox-manager-software?style=for-the-badge
+[contributors-url]: https://github.com/botblox/botblox-manager-software/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/botblox/botblox-manager-software?style=for-the-badge
+[forks-url]: https://github.com/botblox/botblox-manager-software/network/members
+[stars-shield]: https://img.shields.io/github/stars/botblox/botblox-manager-software?style=for-the-badge
+[stars-url]: https://github.com/botblox/botblox-manager-software/stargazers
+[issues-shield]: https://img.shields.io/github/issues/botblox/botblox-manager-software?style=for-the-badge
+[issues-url]: https://github.com/botblox/botblox-manager-software/issues
+[license-shield]: https://img.shields.io/github/license/botblox/botblox-manager-software?style=for-the-badge
+[license-url]: https://github.com/botblox/botblox-manager-software/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/botblox/
 
