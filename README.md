@@ -200,7 +200,7 @@ Note: this will only export environment variables locally in the shell, if you w
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
+Use this space to see useful examples of how this project can be used. Additional screenshots, code examples and demos may be added in this space as necessary. Link to full resouces below.
 
 _For more examples, please refer to the [Documentation](https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview)_
 
@@ -220,6 +220,9 @@ Contributions are what make the open source community such an amazing place to b
 2. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 3. Push to the Branch (`git push origin feature/AmazingFeature`)
 4. Open a Pull Request
+
+Please also note the [Developer Guidelines](https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview) that BotBlox kindly asks of all those who are generous enough to devote their time using or developing on this product.
+
 
 <!-- LICENSE -->
 ## License
