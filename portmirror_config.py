@@ -85,8 +85,22 @@ portmirror_miim_register_map = {
 
 def create_portmirror_parser_data_per_option(
     option: str,
-    settings: Optional[Union[List, str, int]],
+    settings: Optional[Union[List[int], str, int]],
 ) -> None:
+    """Create section of parser data command for port mirror option.
+
+    For a given option for port mirror, link the user input on the command line with
+    the given choices corresponding to that input from the `portmirror_miim_register_map`.
+    Some choices for options allow multiple choices to be selected and so each choice must 
+    be bitwise 'OR'-ed with each other to create the parser data for that option.
+    For 'enable', given that no user explicity specifies that as an arg, it is automatically 
+    assigned the apprioriate value for activated port mirroring.
+
+    :param str option: individual port mirror option
+    :param Optional[Union[List[int], str, int]] settings: Can be a string relating to the port mirror mode (i.e. 'RX'), 
+        int relating to mirror_port (i.e. 1) or List[int] of multiple choices for other options (i.e. [1, 2] for `tx_port`)
+    :rtype: None
+    """
     if option == 'enable':
         portmirror_miim_register_map[option]['data'] = 1
         return
@@ -98,7 +112,7 @@ def create_portmirror_parser_data_per_option(
         individual_setting_data = [choice_mapping[settings]]
 
     data = 0
-    if type(individual_setting_data) == list and len(individual_setting_data) > 1:
+    if len(individual_setting_data) > 1:
         for setting_data in individual_setting_data:
             data = data | setting_data
     else:
@@ -111,6 +125,25 @@ def is_command_already_present(
     data: List[List],
     option: str,
 ) -> Tuple[bool, Union[int, None]]:
+    """Calculate if a command writing to same PHY and REG already exists in data.
+
+    Loops over current commands in data and determines if a command with the same PHY and REG is present.
+    If so, return a tuple with (True, <index_of_command_in_data>).
+    Else, return a tuple with (False, None)
+
+    :param List[Union[List, None]] data: Current commands created, nullable input.
+    :param str option: individual port mirror option
+    :return: object with boolean flag and index representing position in list where command already exists
+        for same PHY and REG
+    :rtype: Tuple[bool, Union[int, None]]
+
+    :example:
+
+    >>> data=[[20, 3, 0, 128]]
+    >>> option='mode'
+    >>> is_command_already_present(data, option)
+    (True, 0)
+    """
     if data:
         for index_in_data, command in enumerate(data):
             if portmirror_miim_register_map[option]['phy'] == command[0] and portmirror_miim_register_map[option]['reg'] == command[1]:
@@ -123,6 +156,17 @@ def update_command(
     command_to_update: List,
     option: str,
 ) -> List:
+    """Update a command when it is found that two parts of data share the same PHY and REG.
+
+    Use the `portmirror_miim_register_map` to update the command with the register offset of the
+    new data that shared the same PHY and REG. If two user inputs refer to data
+    that share the same PHY and REG, then it needs to be part of the same command.
+
+    :param List command_to_update: Current command that needs to be updated with new data.
+    :param str option: individual port mirror option
+    :return: Updated command with data regarding the current port
+    :rtype: List
+    """
     if portmirror_miim_register_map[option]['data'] >= 0:
         option_data = portmirror_miim_register_map[option]['data']
     else:
@@ -139,6 +183,18 @@ def create_command(
     option: str,
     reset: Optional[bool] = False,
 ) -> List:
+    """Create a new command with PHY and REG plus two bytes of command data.
+
+    Use the `portmirror_miim_register_map` to create the command.
+    If reset is defined in user command line arguments, then we reset the 
+    port mirror to be system defaults. Elsewise use data in the
+    `portmirror_miim_register_map`.
+
+    :param str option: individual port mirror option
+    :return: New created command
+    :rtype: List
+    """
+
     if reset:
         option_data = portmirror_miim_register_map[option]['sys_default']
     else:
@@ -159,6 +215,16 @@ def update_data(
     option: str,
     reset: Optional[bool] = False,
 ) -> List[List]:
+    """Update data commands for setting the port mirror configuration.
+
+    If this function is executed before the `portmirror_miim_register_map` is filled out,
+    this will return system defaults for port mirroing
+
+    :param List[List] data: current list of commands
+    :param int port: physical port
+    :return: Command for physical port
+    :rtype: List[List]
+    """
 
     is_present, index_in_data = is_command_already_present(data, option)
 
@@ -183,7 +249,16 @@ def portmirror_create_configuration(
     :rtype: List[List]
 
     :example:
+
+    >>> args=Namespace(execute=<function portmirror_create_configuration at {pointer}>, mirror_port=[4], mode='RXandTX', rx_port=[1, 2], tx_port=[3, 5])
+    >>> portmirror_create_configuration(args)
+    [[20, 3, 12, 192], [20, 4, 144, 192]]
+
+    >>> args=Namespace(execute=<function portmirror_create_configuration at {pointer}>, mirror_port=5, mode='RX', reset=True)
+    >>> portmirror_create_configuration(args)
+    [[20, 3, 1, 0], [20, 4, 1, 224]]
     """
+    print(args)
     data = []
     mirror_options = list(portmirror_miim_register_map.keys())
     try: 

@@ -123,9 +123,9 @@ def is_command_already_present(
 
     :example:
 
-    >>> numbers=[[23, 16, 0, 0]]
+    >>> data=[[23, 16, 0, 0]]
     >>> port=2
-    >>> is_command_already_present(numbers, port)
+    >>> is_command_already_present(data, port)
     (True, 0)
     """
     if data:
