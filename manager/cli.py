@@ -10,8 +10,8 @@ from typing import (
 )
 
 import serial
-from portmirror_config import portmirror_create_configuration
-from vlan_config import vlan_create_configuration
+from .portmirror_config import portmirror_create_configuration
+from .vlan_config import vlan_create_configuration
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -61,7 +61,7 @@ def write_data_to_serial(
             return False
 
 
-def main_cli() -> None:
+def cli() -> None:
     """Define all cli parser and subparsers here."""
     parser = argparse.ArgumentParser(
         description='CLI for configuring SwitchBlox managed settings',
@@ -172,7 +172,3 @@ def main_cli() -> None:
         logging.info('Successful configuration')
     else:
         logging.error('Failed to configure - check logs')
-
-
-if __name__ == '__main__':
-    main_cli()

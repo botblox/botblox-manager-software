@@ -32,7 +32,7 @@
 <br />
 <p align="center">
   <a href="https://www.botblox.io/">
-    <img src="images/logo.png" alt="Logo" width="160" height="160">
+    <img src="https://github.com/botblox/botblox-manager-software/blob/main/images/logo.png?raw=true" alt="Logo" width="160" height="160">
   </a>
 
   <h3 align="center">BotBlox software</h3>
