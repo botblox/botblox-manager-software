@@ -35,7 +35,7 @@ setup(
     install_requires=[
         'pyserial>=3.5',
     ],
-    extra_requires={
+    extras_require={
         'dev': [
             'flake8==3.8.4',
             'flake8-import-order==0.18.1',
