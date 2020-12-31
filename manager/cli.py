@@ -170,7 +170,6 @@ def cli() -> None:
         sys.argv.append('--help')
 
     args = parser.parse_args()
-    print(args)
 
     data = args.execute(args)
 
