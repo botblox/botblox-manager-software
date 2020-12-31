@@ -65,7 +65,7 @@ def cli() -> None:
     """Define all cli parser and subparsers here."""
     parser = argparse.ArgumentParser(
         description='CLI for configuring SwitchBlox managed settings',
-        epilog='Please open an issue on https://github.com/botblox/botblox-manager-software/ if there is a problem',
+        epilog='Please open any issue on https://github.com/botblox/botblox-manager-software/ if there is a problem',
     )
     parser.add_argument(
         '-D',
