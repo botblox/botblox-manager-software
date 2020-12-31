@@ -68,10 +68,12 @@ def cli() -> None:
         epilog='Please open an issue on https://github.com/botblox/botblox-manager-software/ if there is a problem',
     )
     parser.add_argument(
-        'device',
+        '-D',
+        '--device',
         type=str,
         help='Select the USB-to-UART converter device',
         nargs=1,
+        required=True,
     )
 
     subparsers = parser.add_subparsers(
