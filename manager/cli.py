@@ -4,21 +4,21 @@ import argparse
 import logging
 import sys
 import time
-from typing import (
-    List,
-    Optional,
-)
+from typing import List
 
 import serial
-from portmirror_config import portmirror_create_configuration
-from vlan_config import vlan_create_configuration
+
+from .data_manager import (
+    portmirror_create_configuration,
+    vlan_create_configuration,
+)
 
 logging.basicConfig(level=logging.DEBUG)
 
 
 def write_data_to_serial(
     data: List[List],
-    device_name: Optional[str] = '/dev/ttyUSB0',
+    device_name: str,
 ) -> bool:
     """Write data commands to serial port.
 
@@ -61,12 +61,21 @@ def write_data_to_serial(
             return False
 
 
-def main_cli() -> None:
+def cli() -> None:
     """Define all cli parser and subparsers here."""
     parser = argparse.ArgumentParser(
         description='CLI for configuring SwitchBlox managed settings',
-        epilog='Please open an issue on https://github.com/botblox/botblox-manager-software/ if there is a problem',
+        epilog='Please open any issue on https://github.com/botblox/botblox-manager-software/ if there is a problem',
     )
+    parser.add_argument(
+        '-D',
+        '--device',
+        type=str,
+        help='Select the USB-to-UART converter device',
+        nargs=1,
+        required=True,
+    )
+
     subparsers = parser.add_subparsers(
         title='Individual group commands for each configuration',
         description='Please choose a certain command',
@@ -166,13 +175,10 @@ def main_cli() -> None:
     # add stop command
     data.append([100, 0, 0, 0])
 
-    is_success = write_data_to_serial(data)
+    device_name = args.device_name
+    is_success = write_data_to_serial(data=data, device_name=device_name)
 
     if is_success:
         logging.info('Successful configuration')
     else:
         logging.error('Failed to configure - check logs')
-
-
-if __name__ == '__main__':
-    main_cli()

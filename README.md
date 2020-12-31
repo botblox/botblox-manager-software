@@ -32,7 +32,7 @@
 <br />
 <p align="center">
   <a href="https://www.botblox.io/">
-    <img src="images/logo.png" alt="Logo" width="160" height="160">
+    <img src="https://github.com/botblox/botblox-manager-software/blob/main/images/logo.png?raw=true" alt="Logo" width="160" height="160">
   </a>
 
   <h3 align="center">BotBlox software</h3>
@@ -82,131 +82,20 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Welcome to BotBlox Software. We designed this software to go along with our [firmware](https://github.com/botblox/botblox-manager-firmware) to allow our community of customers and developers to manually configure custom settings on BotBlox products, such as the SwitchBlox: our flagship Ethernet switch. For a while now, our customers have requested that they want to be able to program VLAN membership, Quality-of-service, Port mirroring, etc on our products. This Software contains a containerized CLI application, written in Python 3.8, that will allow you to configure the SwitchBlox to perform certain managed functions in your application. The CLI runs in a docker container, allowing us to bundle the dependencies of the application with the application source code itself, without having to worry about application environment setup on Host OS. This application was designed with developers in mind; to make developing features for this application as simple as possible. We very much encourage people to point out improvements, bugs or missing features they want implemented as we want to be very responsive to the needs of both the developer and customer.   
+Welcome to BotBlox Software. We designed this software to go along with our [firmware](https://github.com/botblox/botblox-manager-firmware) to allow our community of customers and developers to manually configure custom settings on BotBlox products, such as the SwitchBlox: our flagship Ethernet switch. For a while now, our customers have requested that they want to be able to program VLAN membership, Quality-of-service, Port mirroring, etc on our products. The software comes as a packaged module that you can use as a CLI application. This can be further extended on request to an application that can be used cleanly with a Python codebase. This application was designed with developers in mind; to make developing features for this application as simple as possible. We very much encourage people to point out improvements, bugs or missing features they want implemented as we want to be very responsive to the needs of both the developer and customer.   
 
 
 ### Built With
 
-* [Docker](https://www.docker.com/)
-* [VirtualBox](https://www.virtualbox.org/)
 * [PySerial](https://github.com/pyserial/pyserial)
 
 <!-- Installation -->
 ## Installation
 
-You'll need to install software that allows the running of containerized applications, with permission to access a USB device (in this case, a USB-to-UART converter).
+You'll need to install Python version 3.6+ in order to use this application.
 
-#### Linux
-* Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your given Linux distribution (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
-
-#### MacOS or Windows
-* Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop) for your OS (or however you wish to use Docker, I used Docker Desktop so I politely suggest you download/install that too).
-* Download and install [VirtualBox](https://www.virtualbox.org/wiki/Downloads) and download and install [VirtualBox Extension Pack](https://www.virtualbox.org/wiki/Downloads) if your device has USB 2.0 ports.
-
-_Important Note_
-
-Currently, `VirtualBox` has not been updated to run natively on Apple's latest hardware that uses the M-series processors so will be unable to download in the future. I am very interested in finding a solution for this. Please create an issue if this turns out to be a high demand problem and I will devote more time to finding a workaround. 
-
-### Getting Started
-
-#### Linux
-
-To get a local copy up and running follow these simple steps.
-1. Clone this repo in the directory 
 ```sh
-   git clone https://github.com/botblox/botblox-manager-software.git
-```
-2. `cd` to project directory
-```sh
-    cd /path/to/project/dir
-```
-3. To run the code, we have to build the container image
-```sh
-    docker build -t switchblox-manager .
-```
-4. Run the image with access to the port connected to the USB-to-UART converter device
-```sh
-    docker run --rm -it --device=/device/name/on/system:/dev/ttyUSB0/ switchblox-manager 
-```
-5. Inside the shell running in the container image, run any CLI commands to write serial data that will write to the USB-to-USART device port
-```sh
-    python app.py --help
-```
-
-_Important Note_
-
-Currently, the lead developer [Aaron Elijah](https://github.com/AaronElijah) does not develop on Linux OS so he hasn't verified that this will run 'as is'. If there are any developers who are interested in this project and develop with a Linux Host OS, please be in contact to verify the installation and running steps work as is or if any changes need to be made. 
-
-#### MacOS and Windows
-To get a local copy up and running follow these simple steps.
-1. Clone this repo in the directory 
-```sh
-   git clone https://github.com/botblox/botblox-manager-software.git
-```
-2. `cd` to project directory
-```sh
-    cd /path/to/project/dir
-```
-
-_Important Note_
-
-It is not trivial to grant device access to the Docker Daemon when running on MacOS or Windows as the Host OS as the Docker Daemon only runs natively on Linux, which means that the Docker Daemon runs inside of a VM (`hyperkit` for MacOS and `Microsoft Hyper-V`) when being used on MacOS or Windows. Unfortunately, both VMs do not support USB forwarding so it is impossible to allow the container access to the USB-to-UART converter device port. However, this can be circumvented by instead running the docker daemon inside of a VM that we run inside VirtualBox and simply point the docker client so that it sends API requests to the docker daemon running that custom VM. We can ensure that this VM has USB device filtering enabled, thus granting the container access. Whilst this extra access does grant the container more access to the host hardware than by default, it is quite limited in scope to a single port device and this software is intended to be used only when programming the device (the device can be left in production equipment untouched afterwards).
-
-3. (One time) Create the VM which will run the `docker daemon` inside and name it `default`
-```sh
-    docker-machine create -d virtualbox default
-```
-4. (One time) Stop the machine so we can configure it
-```sh
-    docker-machine stop
-```
-
-Do either Steps 5. or 6. before moving to 7.
-
-5a. (One time) You can configure the VM in VirtualBox desktop application.
-5b. Open `VirtualBox` application and locate `default` VM.
-5c. Go to `Settings`.
-5d. Go to `Ports`.
-5e. Check `Enable USB Controller` on.
-5f. Open the 'Add USB Device Filter' icon and select the USB-to-UART converter device
-5g. Click `Ok`
-5h. Back in the terminal shell inside the project directory, run 
-```sh
-    docker-machine start
-```
-6a. Enable USB filtering in VM running docker daemon (if you have VirtualBox extension pack installed)
-```sh
-    vboxmanage modifyvm default --usbehci on
-```
-6b. Else if VirtualBox extension is not install
-```sh
-    vboxmanage modifyvm default --usb on
-```
-6c. Add the USB device filter to the `default` VM assuming you know the USB-to-UART device name, vendor id and product id.
-For example, my personal setup uses.
-```sh
-    vboxmanage usbfilter add 0 --target default --name 'FTDI FT232R USB UART' --vendorid 0x0403 --productid 0x6001
-```
-7. Export the environment variables used to tell Docker Client to use the new VM to send API requests to the docker daemon, instead of native mode. 
-```sh
-    eval $(docker-machine env default)
-```
-Note: this will only export environment variables locally in the shell, if you want to set user system environment variables, add them to `~/.bash_profile`
-8. To run the code, we have to build the container image
-```sh
-    docker build -t switchblox-manager .
-```
-9. Run the image with access to the port connected to the USB-to-UART converter device
-```sh
-    docker run --rm -it --device=/dev/ttyUSB0/ switchblox-manager 
-```
-10. Inside the shell running in the container image, run any CLI commands to write serial data that will write to the USB-to-USART device port
-```sh
-    python app.py --help
-```
-11. When done, reset local environment variables to reset docker environment
-```sh
-    eval $(docker-machine env -u)
+  pip install botblox
 ```
 
 <!-- USAGE EXAMPLES -->
