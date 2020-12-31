@@ -70,7 +70,6 @@ def cli() -> None:
     parser.add_argument(
         'device',
         type=str,
-        required=True,
         help='Select the USB-to-UART converter device',
         nargs=1,
     )
