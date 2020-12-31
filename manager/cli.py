@@ -72,7 +72,7 @@ def cli() -> None:
         '--device',
         type=str,
         help='Select the USB-to-UART converter device',
-        nargs=1,
+        nargs='?',
         required=True,
     )
 
@@ -170,12 +170,14 @@ def cli() -> None:
         sys.argv.append('--help')
 
     args = parser.parse_args()
+    print(args)
+
     data = args.execute(args)
 
     # add stop command
     data.append([100, 0, 0, 0])
 
-    device_name = args.device_name
+    device_name = args.device
     is_success = write_data_to_serial(data=data, device_name=device_name)
 
     if is_success:
