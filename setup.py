@@ -32,8 +32,20 @@ setup(
     packages=find_packages(include=['manager', 'manager.*']),
     include_package_data=True,
     install_requires=[
-        'pyserial>=3.5',
+        'pyserial~=3.5',
     ],
+    extra_requires={
+        'dev': [
+            'flake8==3.8.4',
+            'flake8-import-order==0.18.1',
+            'flake8-builtins==1.5.3',
+            'flake8-docstrings==1.5.0',
+            'flake8-rst-docstrings==0.0.14',
+            'flake8-annotations==2.4.1',
+            'flake8-print==4.0.0',
+            'pep8-naming==0.11.1',
+        ],
+    },
     entry_points={
         'console_scripts': [
             'botblox=manager.__main__:main',

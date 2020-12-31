@@ -10,8 +10,8 @@ from typing import (
 )
 
 import serial
-from .portmirror_config import portmirror_create_configuration
-from .vlan_config import vlan_create_configuration
+from .data_manager import portmirror_create_configuration
+from .data_manager import vlan_create_configuration
 
 logging.basicConfig(level=logging.DEBUG)
 
