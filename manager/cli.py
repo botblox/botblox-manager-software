@@ -4,10 +4,7 @@ import argparse
 import logging
 import sys
 import time
-from typing import (
-    List,
-    Optional,
-)
+from typing import List
 
 import serial
 
@@ -21,7 +18,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 def write_data_to_serial(
     data: List[List],
-    device_name: Optional[str] = '/dev/ttyUSB0',
+    device_name: str,
 ) -> bool:
     """Write data commands to serial port.
 
@@ -70,6 +67,14 @@ def cli() -> None:
         description='CLI for configuring SwitchBlox managed settings',
         epilog='Please open an issue on https://github.com/botblox/botblox-manager-software/ if there is a problem',
     )
+    parser.add_argument(
+        'device',
+        type=str,
+        required=True,
+        help='Select the USB-to-UART converter device',
+        nargs=1,
+    )
+
     subparsers = parser.add_subparsers(
         title='Individual group commands for each configuration',
         description='Please choose a certain command',
@@ -169,7 +174,8 @@ def cli() -> None:
     # add stop command
     data.append([100, 0, 0, 0])
 
-    is_success = write_data_to_serial(data)
+    device_name = args.device_name
+    is_success = write_data_to_serial(data=data, device_name=device_name)
 
     if is_success:
         logging.info('Successful configuration')
