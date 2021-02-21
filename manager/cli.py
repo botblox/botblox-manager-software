@@ -173,8 +173,18 @@ def cli() -> None:
 
     data = args.execute(args)
 
+    logging.debug('Data to be sent (excl. "stop" command): ')
+    logging.debug('------------------------------------------')
+    logging.debug(data)
+    logging.debug('------------------------------------------')
+
     # add stop command
     data.append([100, 0, 0, 0])
+
+    logging.debug('Data sent (inc. "stop" command): ')
+    logging.debug('------------------------------------------')
+    logging.debug(data)
+    logging.debug('------------------------------------------')
 
     device_name = args.device
     is_success = write_data_to_serial(data=data, device_name=device_name)
