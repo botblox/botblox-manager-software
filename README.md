@@ -101,9 +101,25 @@ You'll need to install Python version 3.6+ in order to use this application.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Use this space to see useful examples of how this project can be used. Additional screenshots, code examples and demos may be added in this space as necessary. Link to full resouces below.
+Before using the software, it is recommended that you create a python virtual environment in the project directory that you use. There are multiple ways to do this. The easiest way to do this is using the `venv` module, which is part of the Python standard library. You can check the docks [here](https://docs.python.org/3/library/venv.html).
 
-_For more examples, please refer to the [Documentation](https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview)_
+In short; 
+
+1) In your shell, navigate to project root: `cd /path/to/project/root`
+2) Execute command in your shell 
+```sh
+  python -m venv /path/to/virtual/environment
+```
+For example: `python -m venv botblox-env`
+
+3) Execute in your shell 
+```sh
+  source /path/to/virtual/environment
+``` 
+For example: `source botblox-env`
+4) Execute `pip install botblox` to install the package in the virtual environment
+
+_For specific information on what commands you can run, refer to the [Documentation](https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview)_
 
 
 <!-- ROADMAP -->
