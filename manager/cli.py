@@ -9,7 +9,7 @@ from typing import List
 import serial
 
 from .data_manager import (
-    portmirror_create_configuration,
+    PortMirror,
     vlan_create_configuration,
 )
 
@@ -164,7 +164,7 @@ def cli() -> None:
         default=argparse.SUPPRESS,
         help='Reset the Port mirroring configuration to default, this will turn port mirroring off'
     )
-    portmirror_parser_mutex_grouping.set_defaults(execute=portmirror_create_configuration)
+    portmirror_parser_mutex_grouping.set_defaults(execute=PortMirror().create_configuration)
 
     if len(sys.argv) <= 1:
         sys.argv.append('--help')
