@@ -9,7 +9,8 @@ from typing import List
 import serial
 
 from .data_manager import (
-    PortMirror,
+    # PortMirror,
+    PortMirrorConfig,
     vlan_create_configuration,
 )
 
@@ -164,14 +165,21 @@ def cli() -> None:
         default=argparse.SUPPRESS,
         help='Reset the Port mirroring configuration to default, this will turn port mirroring off'
     )
-    portmirror_parser_mutex_grouping.set_defaults(execute=PortMirror().create_configuration)
+    # (1) DEPRECATED
+    # portmirror_parser_mutex_grouping.set_defaults(execute=PortMirror().create_configuration)
+    # (2)
+    portmirror_parser_mutex_grouping.set_defaults(execute=PortMirrorConfig)
 
     if len(sys.argv) <= 1:
         sys.argv.append('--help')
 
     args = parser.parse_args()
 
-    data = args.execute(args)
+    # (1) DEPRECATED
+    # data: List[List[int]] = args.execute(args)
+    # (2)
+    config = args.execute(args)
+    data: List[List[int]] = config.create_configuration()
 
     logging.debug('Data to be sent (excl. "stop" command): ')
     logging.debug('------------------------------------------')
