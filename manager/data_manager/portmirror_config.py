@@ -8,7 +8,8 @@ from typing import (
     Union,
 )
 
-class PortMirrorConfig:
+
+class PortMirrorConfigFactory:
     miim_register_map = {
         'enable': {
             'name': 'PORT_MIRROR_EN',
@@ -86,10 +87,11 @@ class PortMirrorConfig:
 
     def create_parser_data_for_option(
         self,
-        option: str,
+        option_name: str,
         settings: Optional[Union[List[int], str, int]],
     ) -> None:
-        """Create section of parser data command for port mirror option.
+        """Update miim_register_map with data that will be sent to the switch. Use
+        CLI options to configure to the data
 
         For a given option for port mirror, link the user input on the command line with
         the given choices corresponding to that input from the `miim_register_map`.
@@ -99,33 +101,47 @@ class PortMirrorConfig:
         assigned the apprioriate value for activated port mirroring.
 
         :param str option: individual port mirror option
-        :param Optional[Union[List[int], str, int]] settings: Can be a string relating to the port mirror mode (i.e. 'RX'),
-            int relating to mirror_port (i.e. 1) or
+        :param Optional[Union[List[int], str, int]] settings: Can be a string relating to the
+            port mirror mode (i.e. 'RX'), int relating to mirror_port (i.e. 1) or
             List[int] of multiple choices for other options (i.e. [1, 2] for `tx_port`)
         :rtype: None
         """
-        if option == 'enable':
-            self.miim_register_map[option]['data'] = 1
+        assert option_name in self.miim_register_map
+
+        if option_name == 'enable':
+            self.miim_register_map[option_name]['data'] = 1
             return
 
-        choice_mapping = self.miim_register_map[option]['choice_mapping']
-        if type(settings) == list:
-            individual_setting_data = [choice_mapping[setting] for setting in settings]
+        choice_mapping: Dict = self.miim_register_map[option_name]['choice_mapping']
+
+        if isinstance(settings, list):
+            cli_option_data = []
+            for setting in settings:
+                assert setting in choice_mapping
+                cli_option_data.append(choice_mapping[setting])
         else:
-            individual_setting_data = [choice_mapping[settings]]
+            assert settings in choice_mapping
+            cli_option_data = [choice_mapping[settings]]
 
         data = 0
-        if len(individual_setting_data) > 1:
-            for setting_data in individual_setting_data:
+        if len(cli_option_data) > 1:
+            for setting_data in cli_option_data:
                 data = data | setting_data
         else:
-            data = individual_setting_data[0]
+            data = cli_option_data[0]
 
-        self.miim_register_map[option]['data'] = data
+        self.miim_register_map[option_name]['data'] = data
 
 
 class PortMirror:
-    config = PortMirrorConfig()
+    config = PortMirrorConfigFactory()
+
+    cli_options = {
+        'mirror_port',
+        'mode',
+        'rx_port',
+        'tx_port',
+    }
 
     def is_command_already_present(
         self,
@@ -162,9 +178,9 @@ class PortMirror:
 
     def update_command(
         self,
-        command_to_update: List,
+        command_to_update: List[int],
         option: str,
-    ) -> List:
+    ) -> List[int]:
         """Update a command when it is found that two parts of data share the same PHY and REG.
 
         Use the `miim_register_map` to update the command with the register offset of the
@@ -190,23 +206,25 @@ class PortMirror:
     def create_command(
         self,
         option: str,
-        reset: Optional[bool] = False,
-    ) -> List:
+        reset: bool = False,
+    ) -> List[int]:
         """Create a new command with PHY and REG plus two bytes of command data.
 
         Use the `miim_register_map` to create the command.
         If reset is defined in user command line arguments, then we reset the
         port mirror to be system defaults. Elsewise use data in the
-        `miim_register_map`.
+        `miim_register_map` to create command.
 
         :param str option: individual port mirror option
-        :return: New created command
+        :param bool reset: whether to create command for option using system defaults
+        :return: Created command
         :rtype: List
         """
         if reset:
             option_data = self.config.miim_register_map[option]['sys_default']
         else:
             option_data = self.config.miim_register_map[option]['data']
+
         option_offset = self.config.miim_register_map[option]['offset']
 
         command = [
@@ -219,37 +237,38 @@ class PortMirror:
 
     def update_commands(
         self,
-        data: List[List],
+        commands: List[List[int]],
         option: str,
-        reset: Optional[bool] = False,
+        reset: bool = False,
     ) -> List[List]:
         """Update data commands for setting the port mirror configuration.
 
-        If this function is executed before the `miim_register_map` is filled out,
+        If this function is executed with the reset flag set to True,
         this will return system defaults for port mirroing
 
-        :param List[List] data: current list of commands
-        :param int port: physical port
+        :param List[List[int]] data: current list of commands
+        :param str option: one of the keys in miim_register_map
+        :param bool reset: whether to use system defaults to make new commands
         :return: Command for physical port
         :rtype: List[List]
         """
-        is_present, index_in_data = self.is_command_already_present(data, option)
+        is_command_present, index_of_command = self.is_command_already_present(commands, option)
 
-        if is_present and index_in_data is not None:
-            command_to_update = data[index_in_data]
+        if is_command_present and index_of_command is not None:
+            command_to_update = commands[index_of_command]
             command_updated = self.update_command(command_to_update=command_to_update, option=option)
-            data[index_in_data] = command_updated
+            commands[index_of_command] = command_updated
         else:
-            assert is_present is False and index_in_data is None
+            assert is_command_present is False and index_of_command is None
             command = self.create_command(option=option, reset=reset)
-            data.append(command)
+            commands.append(command)
 
-        return data
+        return commands
 
     def create_configuration(
         self,
         args: Tuple,
-    ) -> List[List]:
+    ) -> List[List[int]]:
         """Create parser data from user input.
 
         :param Tuple args: command line arguments from user
@@ -268,22 +287,23 @@ class PortMirror:
         >>> portmirror_create_configuration(args)
         [[20, 3, 1, 0], [20, 4, 1, 224]]
         """
-        commands = []
+
+        commands: List[List[int]] = []
         config_options = list(self.config.miim_register_map.keys())
         if hasattr(args, 'reset'):
             for config_option in config_options:
-                data = self.update_commands(data=commands, option=config_option, reset=True)
+                data = self.update_commands(commands=commands, option=config_option, reset=True)
             return data
-        
+
         args_dict = vars(args)
-            
+
         for config_option in config_options:
             if config_option == 'enable':
-                self.config.create_parser_data_for_option(option=config_option, settings=1)
+                self.config.create_parser_data_for_option(option_name=config_option, settings=1)
             elif args_dict.get(config_option):
-                assert config_option != 'enable'
-                self.config.create_parser_data_for_option(option=config_option, settings=args_dict[config_option])
+                assert config_option != 'enable' and config_option in self.cli_options
+                self.config.create_parser_data_for_option(option_name=config_option, settings=args_dict[config_option])
 
-            data = self.update_commands(data=commands, option=config_option)
+            data = self.update_commands(commands=commands, option=config_option)
 
         return data
