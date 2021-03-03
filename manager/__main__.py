@@ -1,10 +1,9 @@
 """Root commands for botblox manager."""
 
-from .cli import cli
+from manager.cli import cli
 
 
 def main() -> None:
-    """Execute on package entry point."""
     cli()
 
 

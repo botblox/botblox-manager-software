@@ -62,7 +62,7 @@ def write_data_to_serial(
             return False
 
 
-def cli() -> None:
+def create_parser() -> argparse.ArgumentParser:
     """Define all cli parser and subparsers here."""
     parser = argparse.ArgumentParser(
         description='CLI for configuring SwitchBlox managed settings',
@@ -138,6 +138,8 @@ def cli() -> None:
         default=5,
         help='''Select the mirror port (default: port 5)''',
     )
+    print(sys.argv)
+    assert False
     portmirror_parser_config_group.add_argument(
         '-rx',
         '--rx-port',
@@ -169,6 +171,12 @@ def cli() -> None:
     # portmirror_parser_mutex_grouping.set_defaults(execute=PortMirror().create_configuration)
     # (2)
     portmirror_parser_mutex_grouping.set_defaults(execute=PortMirrorConfig)
+
+    return parser
+
+
+def cli() -> None:
+    parser = create_parser()
 
     if len(sys.argv) <= 1:
         sys.argv.append('--help')

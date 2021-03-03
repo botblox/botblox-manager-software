@@ -8,7 +8,7 @@ from typing import (
 
 
 class PortMirrorConfig:
-    miim_register_map = {
+    _default_miim_register_map = {
         'enable': {
             'name': 'PORT_MIRROR_EN',
             'phy': 20,
@@ -87,7 +87,7 @@ class PortMirrorConfig:
         }
     }
 
-    config_options = {
+    _default_config_options = {
         'mirror_port': None,
         'mode': None,
         'rx_port': None,
@@ -96,14 +96,18 @@ class PortMirrorConfig:
         'enable': False,
     }
 
-    commands: List[List[int]] = []
+    _default_commands: List[List[int]] = []
 
     def __init__(
         self,
         args: Tuple,
     ) -> None:
+        self.miim_register_map = dict(self._default_miim_register_map)
+        self.commands = list(self._default_commands)
+
         cli_options: Dict = vars(args)
 
+        self.config_options = dict(self._default_config_options)
         for cli_option in cli_options.keys():
             if cli_option in self.config_options.keys():
                 self.config_options[cli_option] = cli_options[cli_option]
@@ -145,6 +149,7 @@ class PortMirrorConfig:
                 option_data = option_choice_mapping[option]
             elif isinstance(option, list):
                 for each_option in option:
+                    print(each_option)
                     option_data = option_data | option_choice_mapping[each_option]
         else:
             assert use_default is True
@@ -171,8 +176,11 @@ class PortMirrorConfig:
             if isinstance(option, str) or isinstance(option, int):
                 option_data = option_choice_mapping[option]
             elif isinstance(option, list):
+                print(option)
                 for each_option in option:
+                    print(each_option)
                     option_data = option_data | option_choice_mapping[each_option]
+                print(option_data)
         else:
             assert use_default is True
             option_data = self.miim_register_map[option_name]['sys_default']
