@@ -149,7 +149,6 @@ class PortMirrorConfig:
                 option_data = option_choice_mapping[option]
             elif isinstance(option, list):
                 for each_option in option:
-                    print(each_option)
                     option_data = option_data | option_choice_mapping[each_option]
         else:
             assert use_default is True
@@ -173,14 +172,12 @@ class PortMirrorConfig:
         if not use_default:
             option_choice_mapping = self.miim_register_map[option_name]['choice_mapping']
             option_data = 0
+
             if isinstance(option, str) or isinstance(option, int):
                 option_data = option_choice_mapping[option]
             elif isinstance(option, list):
-                print(option)
                 for each_option in option:
-                    print(each_option)
                     option_data = option_data | option_choice_mapping[each_option]
-                print(option_data)
         else:
             assert use_default is True
             option_data = self.miim_register_map[option_name]['sys_default']

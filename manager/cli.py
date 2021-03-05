@@ -138,8 +138,6 @@ def create_parser() -> argparse.ArgumentParser:
         default=5,
         help='''Select the mirror port (default: port 5)''',
     )
-    print(sys.argv)
-    assert False
     portmirror_parser_config_group.add_argument(
         '-rx',
         '--rx-port',
