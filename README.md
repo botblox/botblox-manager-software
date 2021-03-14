@@ -70,6 +70,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href='#testing'>Testing</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -104,6 +105,13 @@ You'll need to install Python version 3.6+ in order to use this application.
 Use this space to see useful examples of how this project can be used. Additional screenshots, code examples and demos may be added in this space as necessary. Link to full resouces below.
 
 _For more examples, please refer to the [Documentation](https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview)_
+
+
+<!-- USAGE EXAMPLES -->
+## Testing
+```
+python -m pytest tests/
+```
 
 
 <!-- ROADMAP -->

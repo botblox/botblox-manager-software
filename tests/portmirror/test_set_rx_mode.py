@@ -23,7 +23,10 @@ class TestSetRxMode:
     ]
 
     @staticmethod
-    def _assert_data_is_correct_type(data: Any) -> None:
+    def _assert_data_is_correct_type(
+        *,
+        data: Any,
+    ) -> None:
         assert len(data) > 0
         assert len(data[0]) == 4
         assert isinstance(data, list)
@@ -32,6 +35,7 @@ class TestSetRxMode:
 
     @staticmethod
     def _get_data_from_cli_args(
+        *,
         parser: ArgumentParser,
         args: List[str],
     ) -> List[List[int]]:
