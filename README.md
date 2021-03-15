@@ -70,6 +70,7 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    <li><a href='#testing'>Testing</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -120,6 +121,13 @@ For example: `source botblox-env`
 4) Execute `pip install botblox` to install the package in the virtual environment
 
 _For specific information on what commands you can run, refer to the [Documentation](https://botblox.atlassian.net/wiki/spaces/HARDWARE/overview)_
+
+
+<!-- USAGE EXAMPLES -->
+## Testing
+```
+python -m pytest tests/
+```
 
 
 <!-- ROADMAP -->

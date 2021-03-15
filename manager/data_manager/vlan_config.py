@@ -55,11 +55,11 @@ vlan_miim_register_map = {
 }
 
 vlan_binary_offset_map = {
-        1: 2,
-        2: 3,
-        3: 4,
-        4: 6,
-        5: 7,
+    1: 2,
+    2: 3,
+    3: 4,
+    4: 6,
+    5: 7,
 }
 
 
