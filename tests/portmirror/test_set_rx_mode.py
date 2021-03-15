@@ -124,7 +124,7 @@ class TestSetRxMode:
         captured: pytest.CaptureResult[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_result = [[20, 4, 1, 224], [20, 3, 92, 128]]  # CHECK THIS
+        expected_result = [[20, 4, 1, 224], [20, 3, 92, 128]]
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(str(expected_result)) > -1
@@ -141,7 +141,7 @@ class TestSetRxMode:
         ]
 
         self._run_command_to_error(self.package, self.base_args, test_args)
-    
+
         captured: pytest.CaptureResult[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 

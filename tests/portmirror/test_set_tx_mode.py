@@ -35,7 +35,7 @@ class TestSetTxMode:
 
     @staticmethod
     def _get_data_from_cli_args(
-        *, 
+        *,
         parser: ArgumentParser,
         args: List[str],
     ) -> List[List[int]]:
@@ -69,7 +69,7 @@ class TestSetTxMode:
         assert data == expected_result
 
     def test_multiple_tx_port(
-        self, 
+        self,
         parser: ArgumentParser,
     ) -> None:
         test_args = self.base_args + [
@@ -82,7 +82,7 @@ class TestSetTxMode:
         ]
 
         data = self._get_data_from_cli_args(parser=parser, args=test_args)
-        self._assert_data_is_correct_type(data=data) 
+        self._assert_data_is_correct_type(data=data)
 
         expected_result = [[20, 4, 88, 64], [20, 3, 1, 160]]
         assert data == expected_result
@@ -105,7 +105,6 @@ class TestSetTxMode:
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
-
 
     def test_default_mirror_port(
         self,
@@ -141,7 +140,7 @@ class TestSetTxMode:
         ]
 
         self._run_command_to_error(self.package, self.base_args, test_args)
-    
+
         captured: pytest.CaptureResult[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
@@ -172,4 +171,3 @@ class TestSetTxMode:
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
-
