@@ -3,6 +3,7 @@ from typing import (
     List,
     Optional,
     Tuple,
+    TypedDict,
     Union,
 )
 
@@ -87,12 +88,20 @@ class PortMirrorConfig:
         }
     }
 
-    _default_config_options = {
+    class ConfigOptions(TypedDict):
+        mirror_port: int
+        mode: str
+        rx_port: Optional[List[int]]
+        tx_port: Optional[List[int]]
+        reset: bool
+        enable: bool
+
+    _default_config_options: ConfigOptions = {
         'mirror_port': None,
         'mode': None,
         'rx_port': None,
         'tx_port': None,
-        'reset': None,
+        'reset': False,
         'enable': False,
     }
 
@@ -224,11 +233,10 @@ class PortMirrorConfig:
 
         assert not self.config_options['reset']
 
-        for option_name, option in self.config_options.items():
-            if option_name == 'reset':
-                continue
+        non_reset_config_options = self.config_options
+        non_reset_config_options.pop('reset')
 
-            assert option_name != 'reset'
+        for option_name, option in non_reset_config_options.items():
             if option is None:
                 self.add_command_for_option_default(option_name)
                 continue
