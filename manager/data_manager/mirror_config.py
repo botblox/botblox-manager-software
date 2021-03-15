@@ -217,6 +217,8 @@ class PortMirrorConfig:
             for option_name in self.config_options.keys():
                 if option_name in self.miim_register_map.keys():
                     self.add_command_for_option_default(option_name, is_reset_mode=True)
+                else:
+                    assert ValueError('Could not find option in register map')
             else:
                 return self.commands
 

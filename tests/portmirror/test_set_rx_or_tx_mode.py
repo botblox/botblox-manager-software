@@ -6,7 +6,7 @@ from typing import Any, AnyStr, List, Tuple
 from pytest import CaptureFixture
 
 
-class TestSetTxMode:
+class TestSetRxOrTxMode:
     package: List[str] = ['botblox']
     base_args: List[str] = [
         '--device',
