@@ -13,7 +13,7 @@ class TestSetTxMode:
         'usb_usart_converter_device',
         'mirror',
         '-m',
-        'RXandTX',
+        'RXorTX',
     ]
 
     @staticmethod
@@ -61,7 +61,7 @@ class TestSetTxMode:
         data = self._get_data_from_cli_args(parser=parser, args=test_args)
         self._assert_data_is_correct_type(data=data)
 
-        expected_result = [[20, 4, 8, 64], [20, 3, 16, 192]]
+        expected_result = [[20, 4, 8, 64], [20, 3, 16, 224]]
         assert data == expected_result
 
     def test_same_tx_and_rx_port(
@@ -80,7 +80,7 @@ class TestSetTxMode:
         data = self._get_data_from_cli_args(parser=parser, args=test_args)
         self._assert_data_is_correct_type(data=data)
 
-        expected_result = [[20, 4, 8, 64], [20, 3, 8, 192]]
+        expected_result = [[20, 4, 8, 64], [20, 3, 8, 224]]
         assert data == expected_result
 
     def test_rx_port_non_existent(
