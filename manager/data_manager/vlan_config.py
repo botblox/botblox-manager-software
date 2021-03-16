@@ -104,7 +104,6 @@ def create_vlan_parser_data_per_port(
         vlan_miim_register_map[port]['data'] = vlan_miim_register_map[port]['data'] | (
             1 << vlan_binary_offset_map[other_port])
 
-
 def is_command_already_present(
     data: List[Union[List, None]],
     port: int,

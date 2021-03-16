@@ -131,18 +131,18 @@ class PortMirrorConfig:
         option_name: str,
     ) -> Tuple[bool, int]:
         if self.commands != []:
-            for index, command in enumerate(self.commands):
-                option_phy = self.miim_register_map[option_name]['phy']
-                option_reg = self.miim_register_map[option_name]['reg']
+            option_phy = self.miim_register_map[option_name]['phy']
+            option_reg = self.miim_register_map[option_name]['reg']
 
+            for index, command in enumerate(self.commands):
                 if option_phy == command[0] and option_reg == command[1]:
                     return (True, index)
         return (False, -1)
 
     def update_existing_command(
         self,
-        option_name: str,
         index_of_command_to_update: int,
+        option_name: str,
         option: Optional[Union[int, str, List[int]]] = None,
         use_default: bool = False,
     ) -> None:
@@ -167,7 +167,7 @@ class PortMirrorConfig:
         command_to_update[3] = command_to_update[3] | (((option_data << option_bits_offset) & 0xFF00) >> 8)
 
         self.commands[index_of_command_to_update] = command_to_update
-        return
+        return None
 
     def create_new_command(
         self,
@@ -198,36 +198,33 @@ class PortMirrorConfig:
             ((option_data << option_bits_offset) & 0xFF00) >> 8,
         ]
         self.commands.append(command)
-        return
+        return None
 
     def add_command_for_option_default(
         self,
         option_name: str,
-        is_reset_mode: bool = False,
     ) -> None:
-        if not is_reset_mode:
-            assert self.config_options[option_name] is None
         assert option_name in self.miim_register_map.keys()
 
         is_command_exist: Tuple[bool, int] = self.is_command_already_present(option_name)
         if is_command_exist[0]:
             command_index: int = is_command_exist[1]
-            self.update_existing_command(option_name, command_index, None, use_default=True)
+            self.update_existing_command(command_index, option_name=option_name, option=None, use_default=True)
         else:
             assert is_command_exist[0] is False
             self.create_new_command(option_name, None, use_default=True)
 
-        return
+        return None
 
     def create_configuration(
         self,
     ) -> List[List[int]]:
         if self.config_options['reset']:
             for option_name in self.config_options.keys():
-                if option_name in self.miim_register_map.keys():
-                    self.add_command_for_option_default(option_name, is_reset_mode=True)
-                else:
-                    assert ValueError('Could not find option in register map')
+                # if option_name in self.miim_register_map.keys():
+                self.add_command_for_option_default(option_name)
+                # else:
+                #     assert ValueError('Could not find option in register map')
             else:
                 return self.commands
 
@@ -245,7 +242,7 @@ class PortMirrorConfig:
 
             if is_command_exist[0]:
                 command_index: int = is_command_exist[1]
-                self.update_existing_command(option_name, command_index, option)
+                self.update_existing_command(command_index, option_name=option_name, option=option)
             else:
                 assert is_command_exist[0] is False
                 self.create_new_command(option_name, option)

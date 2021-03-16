@@ -9,8 +9,8 @@ from typing import List
 import serial
 
 from .data_manager import (
-    # PortMirror,
     PortMirrorConfig,
+    VlanConfig,
     vlan_create_configuration,
 )
 
@@ -185,7 +185,8 @@ def cli() -> None:
     # data: List[List[int]] = args.execute(args)
     # (2)
     config = args.execute(args)
-    data: List[List[int]] = config.create_configuration()
+    print(config)
+    # data: List[List[int]] = config.create_configuration()
 
     logging.debug('Data to be sent (excl. "stop" command): ')
     logging.debug('------------------------------------------')
