@@ -61,7 +61,5 @@ class TestSetRxMode:
         data = self._get_data_from_cli_args(parser=parser, args=args)
         self._assert_data_is_correct_type(data=data)
 
-        print(data)
-
         expected_result = [[23, 16, 6, 6], [23, 17, 72, 0], [23, 18, 72, 255]]
         assert data == expected_result
