@@ -199,7 +199,7 @@ class VlanConfig:
     ) -> List[List[int]]:
         if self.config_options['reset']:
             for port in self.miim_register_map.keys():
-                self.add_command_for_option_default(port, is_default=True)
+                self.add_command_for_option_default(port)
             else:
                 return self.commands
 

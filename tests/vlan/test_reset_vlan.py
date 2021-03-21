@@ -42,5 +42,5 @@ class TestSetReset:
         )
         self._assert_data_is_correct_type(data=data)
 
-        expected_result = [[23, 16, 255, 255], [23, 17, 255, 255], [23, 18, 255, 255]]
+        expected_result = [[23, 16, 255, 255], [23, 17, 255, 0], [23, 18, 255, 255]]
         assert data == expected_result

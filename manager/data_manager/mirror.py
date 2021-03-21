@@ -204,8 +204,6 @@ class PortMirrorConfig:
         self,
         option_name: str,
     ) -> None:
-        assert option_name in self.miim_register_map.keys()
-
         is_command_exist: Tuple[bool, int] = self.is_command_already_present(option_name)
         if is_command_exist[0]:
             command_index: int = is_command_exist[1]
@@ -221,10 +219,8 @@ class PortMirrorConfig:
     ) -> List[List[int]]:
         if self.config_options['reset']:
             for option_name in self.config_options.keys():
-                # if option_name in self.miim_register_map.keys():
-                self.add_command_for_option_default(option_name)
-                # else:
-                #     assert ValueError('Could not find option in register map')
+                if option_name in self.miim_register_map.keys():
+                    self.add_command_for_option_default(option_name)
             else:
                 return self.commands
 
