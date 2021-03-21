@@ -1,8 +1,5 @@
 from argparse import ArgumentParser
-from typing import (
-    Any,
-    List,
-)
+from typing import (Any, List)
 
 
 class TestSetReset:
@@ -10,7 +7,7 @@ class TestSetReset:
     base_args: List[str] = [
         '--device',
         'usb_usart_converter_device',
-        'mirror',
+        'vlan',
         '--reset',
     ]
 
@@ -39,9 +36,11 @@ class TestSetReset:
         self,
         parser: ArgumentParser,
     ) -> None:
-
-        data = self._get_data_from_cli_args(parser=parser, args=self.base_args)
+        data = self._get_data_from_cli_args(
+            parser=parser,
+            args=self.base_args,
+        )
         self._assert_data_is_correct_type(data=data)
 
-        expected_result = [[20, 4, 1, 224], [20, 3, 1, 0]]
+        expected_result = [[23, 16, 255, 255], [23, 17, 255, 255], [23, 18, 255, 255]]
         assert data == expected_result

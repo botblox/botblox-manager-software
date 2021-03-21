@@ -11,7 +11,6 @@ import serial
 from .data_manager import (
     PortMirrorConfig,
     VlanConfig,
-    vlan_create_configuration,
 )
 
 logging.basicConfig(level=logging.DEBUG)
@@ -108,7 +107,7 @@ def create_parser() -> argparse.ArgumentParser:
         default=argparse.SUPPRESS,
         help='''Reset the VLAN configuration to be as system default'''
     )
-    vlan_parser_group.set_defaults(execute=vlan_create_configuration)
+    vlan_parser_group.set_defaults(execute=VlanConfig)
 
     # Port mirroring CLI
     portmirror_parser = subparsers.add_parser(
@@ -181,12 +180,8 @@ def cli() -> None:
 
     args = parser.parse_args()
 
-    # (1) DEPRECATED
-    # data: List[List[int]] = args.execute(args)
-    # (2)
     config = args.execute(args)
-    print(config)
-    # data: List[List[int]] = config.create_configuration()
+    data: List[List[int]] = config.create_configuration()
 
     logging.debug('Data to be sent (excl. "stop" command): ')
     logging.debug('------------------------------------------')
