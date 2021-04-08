@@ -19,7 +19,7 @@ class VlanConfig:
             'sys_default': 0xFF,
             'data': 0,
             'choice_mapping': {
-                1: 0b00000010,
+                1: 0b00000100,
             }
         },
         2: {
@@ -31,7 +31,7 @@ class VlanConfig:
             'sys_default': 0xFF,
             'data': 0,
             'choice_mapping': {
-                2: 0b00000100,
+                2: 0b00001000,
             }
         },
         3: {
@@ -43,7 +43,7 @@ class VlanConfig:
             'sys_default': 0xFF,
             'data': 0,
             'choice_mapping': {
-                3: 0b00001000,
+                3: 0b00010000,
             }
         },
         4: {
