@@ -87,7 +87,7 @@ def create_parser() -> argparse.ArgumentParser:
         'vlan',
         help='Configure the ports to be in VLAN groups',
     )
-    vlan_parser_group = vlan_parser.add_mutually_exclusive_group()
+    vlan_parser_group = vlan_parser.add_mutually_exclusive_group(required=True)
     vlan_parser_group.add_argument(
         '-g',
         '--group',
@@ -97,8 +97,11 @@ def create_parser() -> argparse.ArgumentParser:
         choices=[1, 2, 3, 4, 5],
         required=False,
         help='''Define the VLAN member groups using port number,
-        i.e. --group 1 2 --group 3 4 puts makes Group A have
-        ports 1 and 2, and Group B have ports 3 and 4'''
+        i.e. --group 1 2 --group 3 4 makes Group A have
+        ports 1 and 2 and Group B have ports 3 and 4. All unmentioned
+        ports are assigned to default group. If a group has only 1 port,
+        the port gets isolated. In this example, port 5 would
+        not be allowed to communicate with any other port.'''
     )
     vlan_parser_group.add_argument(
         '-r',

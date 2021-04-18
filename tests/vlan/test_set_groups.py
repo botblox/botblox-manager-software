@@ -8,7 +8,7 @@ from typing import (
 )
 
 
-class TestSetRxMode:
+class TestSetGroups:
     package: List[str] = ['botblox']
     base_args: List[str] = [
         '--device',
@@ -45,7 +45,7 @@ class TestSetRxMode:
         cli_status_code: int = subprocess.call(command)
         assert cli_status_code > 0, 'The command did not exit with an error code'
 
-    def test_single_rx_port(
+    def test_2x2_groups_1_isolated(
         self,
         parser: ArgumentParser,
     ) -> None:
@@ -61,5 +61,5 @@ class TestSetRxMode:
         data = self._get_data_from_cli_args(parser=parser, args=args)
         self._assert_data_is_correct_type(data=data)
 
-        expected_result = [[23, 16, 6, 6], [23, 17, 72, 0], [23, 18, 72, 255]]
+        expected_result = [[23, 16, 12, 12], [23, 17, 80, 0], [23, 18, 80, 255]]
         assert data == expected_result
