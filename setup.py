@@ -37,6 +37,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'pyserial>=3.5',
+        'typing-extensions>=3.7.4.3'
     ],
     extras_require={
         'dev': [
