@@ -46,6 +46,7 @@ setup(
             'flake8-annotations==2.6.2',
             'flake8-print==4.0.0',
             'pep8-naming==0.11.1',
+            'pytest==6.2.3',
         ],
     },
     entry_points={
