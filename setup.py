@@ -25,7 +25,7 @@ setup(
     author='Aaron Elijah',
     author_email='aaronzakelijah@googlemail.com',
     license='MIT',
-    python_requires='>=3.6',
+    python_requires='>=3.6.1',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.6',
@@ -43,7 +43,7 @@ setup(
             'flake8==3.8.4',
             'flake8-import-order==0.18.1',
             'flake8-builtins==1.5.3',
-            'flake8-annotations==2.4.1',
+            'flake8-annotations==2.6.2',
             'flake8-print==4.0.0',
             'pep8-naming==0.11.1',
         ],

@@ -3,8 +3,11 @@ from typing import (
     List,
     Optional,
     Tuple,
-    TypedDict,
     Union,
+)
+
+from typing_extensions import (
+    TypedDict
 )
 
 
