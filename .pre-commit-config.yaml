@@ -10,9 +10,9 @@ repos:
       - id: check-merge-conflict
       - id: check-toml
       - id: requirements-txt-fixer
-      stages: [commit-msg]
+        stages: [commit-msg]
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v2.17.4
-     hooks:
+    hooks:
       - id: commitizen
         stages: [commit-msg]
