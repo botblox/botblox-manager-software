@@ -26,6 +26,9 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+[![pre-commit](precommit-shield)](precommit-url)
+
+
 
 
 <!-- PROJECT LOGO -->
@@ -179,4 +182,6 @@ Project Link: [https://github.com/botblox/botblox-manager-software](https://gith
 [license-url]: https://github.com/botblox/botblox-manager-software/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/botblox/
+[precommit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+[precommit-url]: https://github.com/pre-commit/pre-commit
 
