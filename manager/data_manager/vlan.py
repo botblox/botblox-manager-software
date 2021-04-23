@@ -4,7 +4,10 @@ from typing import (
     List,
     Optional,
     Tuple,
-    TypedDict,
+)
+
+from typing_extensions import (
+    TypedDict
 )
 
 

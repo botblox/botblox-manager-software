@@ -25,7 +25,7 @@ setup(
     author='Aaron Elijah',
     author_email='aaronzakelijah@googlemail.com',
     license='MIT',
-    python_requires='>=3.6',
+    python_requires='>=3.6.1',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.6',
