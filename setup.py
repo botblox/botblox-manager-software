@@ -41,6 +41,7 @@ setup(
     ],
     extras_require={
         'dev': [
+            'commitizen>=2.17.4',
             'flake8>=3.8.4',
             'flake8-import-order>=0.18.1',
             'flake8-builtins>=1.5.3',
