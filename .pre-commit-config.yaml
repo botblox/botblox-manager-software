@@ -1,0 +1,18 @@
+default_language_version:
+    python: python3.7
+fail_fast: true
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: check-ast
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: requirements-txt-fixer
+        stages: [commit-msg]
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v2.17.4
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
