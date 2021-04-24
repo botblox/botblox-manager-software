@@ -3,7 +3,7 @@
 import os
 import pathlib
 
-from manager import __version__
+from botblox_config import __version__
 from setuptools import (
     find_packages,
     setup,

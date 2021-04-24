@@ -1,7 +1,7 @@
 import argparse
 
 import pytest
-from manager.cli import create_parser
+from botblox_config.cli import create_parser
 
 
 @pytest.fixture(scope='function')
