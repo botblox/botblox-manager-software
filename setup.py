@@ -3,7 +3,7 @@
 import os
 import pathlib
 
-from manager import __version__
+from botblox_config import __version__
 from setuptools import (
     find_packages,
     setup,
@@ -33,7 +33,7 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Operating System :: OS Independent',
     ],
-    packages=find_packages(include=['manager', 'manager.*']),
+    packages=find_packages(include=['botblox_config', 'botblox_config.*']),
     include_package_data=True,
     install_requires=[
         'pyserial>=3.5',
@@ -54,7 +54,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
-            'botblox=manager.__main__:main',
+            'botblox=botblox_config.__main__:main',
         ],
     },
 )

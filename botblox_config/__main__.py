@@ -1,6 +1,6 @@
 """Root commands for botblox manager."""
 
-from manager.cli import cli
+from .cli import cli
 
 
 def main() -> None:

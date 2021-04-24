@@ -3,14 +3,14 @@ name: CI
 on: push
 
 jobs:
-  lint: 
+  lint:
     name: Flake8 linting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.8
         uses: actions/setup-python@v1
-        with: 
+        with:
           python-version: 3.8
       - name: Install packages
         run: pip install -e .[dev]
@@ -19,7 +19,8 @@ jobs:
   test-os-python-combination:
     name: Test python ${{ matrix.python-version }} on OS ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    strategy: 
+    strategy:
+      fail-fast: true
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: [3.6, 3.7, 3.8]
@@ -33,4 +34,3 @@ jobs:
         run: pip install -e .[dev]
       - name: Run unit tests
         run:  python -m pytest tests/
-      
