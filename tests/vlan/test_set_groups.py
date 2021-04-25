@@ -63,3 +63,26 @@ class TestSetGroups:
 
         expected_result = [[23, 16, 12, 12], [23, 17, 80, 0], [23, 18, 80, 255]]
         assert data == expected_result
+
+    def test_single_port_vlan_groups(
+        self,
+        parser: ArgumentParser,
+    ) -> None:
+        args = self.base_args + [
+            '--group',
+            '1',
+            '--group',
+            '2',
+            '--group',
+            '3',
+            '--group',
+            '4',
+            '--group',
+            '5',
+        ]
+
+        data = self._get_data_from_cli_args(parser=parser, args=args)
+        self._assert_data_is_correct_type(data=data)
+
+        expected_result = [[23, 16, 4, 8], [23, 17, 16, 0], [23, 18, 64, 128]]
+        assert data == expected_result
