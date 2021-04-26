@@ -1,7 +1,7 @@
 from typing import List, AnyStr
 from pytest import CaptureFixture
 
-from manager.cli import create_parser
+from botblox_config.cli import create_parser
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
@@ -70,7 +70,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -T/--receive-mode: invalid VLANReceiveMode value: 'WRONG'"
+        expected_stderr_message = "tag-vlan: error: argument -T/--receive-mode: invalid VLANReceiveMode value: 'WRONG'"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -88,7 +88,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -T/--receive-mode: expected one argument"
+        expected_stderr_message = "tag-vlan: error: argument -T/--receive-mode: expected one argument"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1

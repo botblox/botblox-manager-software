@@ -9,7 +9,8 @@ from typing import (
     Tuple,
     Union,
     cast,
-    AnyStr, Optional
+    AnyStr,
+    Optional
 )
 
 from .argparse_utils import add_multi_argument, IntRange

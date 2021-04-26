@@ -1,7 +1,7 @@
 from typing import List
 
-from manager.switch.switch import Register, SwitchChip, BitField, BitsField, ByteField, ShortField, PortListField, \
-    Port
+from botblox_config.switch.switch import Register, SwitchChip, BitField, BitsField, ByteField, ShortField,\
+    PortListField, Port
 
 
 class StubPortListField(PortListField):

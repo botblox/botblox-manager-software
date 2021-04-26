@@ -1,4 +1,4 @@
-from manager.switch.switch import Register, SwitchChip, PortListField
+from botblox_config.switch.switch import Register, SwitchChip, PortListField
 
 
 class ChipStub(SwitchChip):

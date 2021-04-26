@@ -26,6 +26,8 @@
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
+[![pre-commit][precommit-shield]][precommit-url]
+
 
 
 <!-- PROJECT LOGO -->
@@ -83,7 +85,7 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-Welcome to BotBlox Software. We designed this software to go along with our [firmware](https://github.com/botblox/botblox-manager-firmware) to allow our community of customers and developers to manually configure custom settings on BotBlox products, such as the SwitchBlox: our flagship Ethernet switch. For a while now, our customers have requested that they want to be able to program VLAN membership, Quality-of-service, Port mirroring, etc on our products. The software comes as a packaged module that you can use as a CLI application. This can be further extended on request to an application that can be used cleanly with a Python codebase. This application was designed with developers in mind; to make developing features for this application as simple as possible. We very much encourage people to point out improvements, bugs or missing features they want implemented as we want to be very responsive to the needs of both the developer and customer.   
+Welcome to BotBlox Software. We designed this software to go along with our [firmware](https://github.com/botblox/botblox-manager-firmware) to allow our community of customers and developers to manually configure custom settings on BotBlox products, such as the SwitchBlox: our flagship Ethernet switch. For a while now, our customers have requested that they want to be able to program VLAN membership, Quality-of-service, Port mirroring, etc on our products. The software comes as a packaged module that you can use as a CLI application. This can be further extended on request to an application that can be used cleanly with a Python codebase. This application was designed with developers in mind; to make developing features for this application as simple as possible. We very much encourage people to point out improvements, bugs or missing features they want implemented as we want to be very responsive to the needs of both the developer and customer.
 
 
 ### Built With
@@ -102,21 +104,21 @@ You'll need to install Python version 3.6+ in order to use this application.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Before using the software, it is recommended that you create a python virtual environment in the project directory that you use. There are multiple ways to do this. The easiest way to do this is using the `venv` module, which is part of the Python standard library. You can check the docks [here](https://docs.python.org/3/library/venv.html).
+Before using the software, it is recommended that you create a python virtual environment in the project directory that you use. There are multiple ways to do this. The easiest way to do this is using the `venv` module, which is part of the Python standard library. You can check the docs [here](https://docs.python.org/3/library/venv.html).
 
-In short; 
+In short;
 
 1) In your shell, navigate to project root: `cd /path/to/project/root`
-2) Execute command in your shell 
+2) Execute command in your shell
 ```sh
   python -m venv /path/to/virtual/environment
 ```
 For example: `python -m venv botblox-env`
 
-3) Execute in your shell 
+3) Execute in your shell
 ```sh
   source /path/to/virtual/environment
-``` 
+```
 For example: `source botblox-env`
 4) Execute `pip install botblox` to install the package in the virtual environment
 
@@ -179,4 +181,6 @@ Project Link: [https://github.com/botblox/botblox-manager-software](https://gith
 [license-url]: https://github.com/botblox/botblox-manager-software/blob/main/LICENSE
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/company/botblox/
+[precommit-shield]: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white
+[precommit-url]: https://github.com/pre-commit/pre-commit
 

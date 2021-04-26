@@ -1,4 +1,4 @@
-from manager.switch.switch import set_bit, get_bit
+from botblox_config.switch.switch import set_bit, get_bit
 
 
 class TestBitOps:

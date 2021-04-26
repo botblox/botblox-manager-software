@@ -1,7 +1,7 @@
 from typing import List, AnyStr
 from pytest import CaptureFixture
 
-from manager.cli import create_parser
+from botblox_config.cli import create_parser
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
@@ -90,7 +90,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -M/--vlan-mode: invalid VLANMode value: 'WRONG'"
+        expected_stderr_message = "tag-vlan: error: argument -M/--vlan-mode: invalid VLANMode value: 'WRONG'"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -108,7 +108,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -M/--vlan-mode: expected one argument"
+        expected_stderr_message = "tag-vlan: error: argument -M/--vlan-mode: expected one argument"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -194,7 +194,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'botblox tag-vlan: error: argument -m/--port-vlan-mode: Wrong value "WRONG" of ' \
+        expected_stderr_message = 'tag-vlan: error: argument -m/--port-vlan-mode: Wrong value "WRONG" of ' \
                                   'argument "vlan_mode", allowed values are {DISABLED,OPTIONAL,ENABLED,STRICT}'
         actual_stderr: str = captured.err
 
@@ -215,7 +215,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'botblox tag-vlan: error: argument -m/--port-vlan-mode: Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
+        expected_stderr_message = 'tag-vlan: error: argument -m/--port-vlan-mode: Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -235,7 +235,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'botblox tag-vlan: error: argument -m/--port-vlan-mode: Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
+        expected_stderr_message = 'tag-vlan: error: argument -m/--port-vlan-mode: Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -254,7 +254,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -m/--port-vlan-mode: expected 2 arguments"
+        expected_stderr_message = "tag-vlan: error: argument -m/--port-vlan-mode: expected 2 arguments"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -272,7 +272,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -m/--port-vlan-mode: expected 2 arguments"
+        expected_stderr_message = "tag-vlan: error: argument -m/--port-vlan-mode: expected 2 arguments"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -315,7 +315,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: Switchblox can only have all its ports in mode DISABLED/OPTIONAL or all in ENABLED/STRICT, but not a combination of these two groups."
+        expected_stderr_message = "tag-vlan: error: Switchblox can only have all its ports in mode DISABLED/OPTIONAL or all in ENABLED/STRICT, but not a combination of these two groups."
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1

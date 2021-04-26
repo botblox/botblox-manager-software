@@ -4,7 +4,7 @@ from typing import (
     AnyStr
 )
 
-from .switch_config import SwitchConfig, SwitchConfigCLI
+from .switch_config import SwitchConfigCLI
 
 
 class EraseConfigCLI(SwitchConfigCLI):

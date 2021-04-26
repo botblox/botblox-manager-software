@@ -1,5 +1,7 @@
 import argparse
+import os
 import subprocess
+import sys
 from functools import reduce
 from typing import Any, List, Tuple
 
@@ -30,6 +32,8 @@ def get_data_from_cli_args(
 def run_command_to_error(
     *args: Tuple[List[str], ...],
 ) -> None:
+    if len(args) > 0 and len(args[0]) > 0 and args[0][0] == "botblox":
+        args = ([sys.executable, "-m", "botblox_config"],) + args[1:]
     command: List[str] = reduce(lambda command, arg: command + arg, args)
     cli_status_code: int = subprocess.call(command)
     assert cli_status_code > 0, 'The command did not exit with an error code'

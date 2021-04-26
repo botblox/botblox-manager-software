@@ -1,7 +1,7 @@
 from typing import List, AnyStr
 from pytest import CaptureFixture
 
-from manager.cli import create_parser
+from botblox_config.cli import create_parser
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 

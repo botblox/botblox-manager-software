@@ -3,7 +3,7 @@
 import os
 import pathlib
 
-from manager import __version__
+from botblox_config import __version__
 from setuptools import (
     find_packages,
     setup,
@@ -25,7 +25,7 @@ setup(
     author='Aaron Elijah',
     author_email='aaronzakelijah@googlemail.com',
     license='MIT',
-    python_requires='>=3.6',
+    python_requires='>=3.6.1',
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.6',
@@ -33,24 +33,28 @@ setup(
         'Programming Language :: Python :: 3.8',
         'Operating System :: OS Independent',
     ],
-    packages=find_packages(include=['manager', 'manager.*']),
+    packages=find_packages(include=['botblox_config', 'botblox_config.*']),
     include_package_data=True,
     install_requires=[
         'pyserial>=3.5',
+        'typing-extensions>=3.7.4.3',
     ],
     extras_require={
         'dev': [
-            'flake8==3.8.4',
-            'flake8-import-order==0.18.1',
-            'flake8-builtins==1.5.3',
-            'flake8-annotations==2.4.1',
-            'flake8-print==4.0.0',
-            'pep8-naming==0.11.1',
+            'commitizen>=2.17.4',
+            'flake8>=3.8.4',
+            'flake8-import-order>=0.18.1',
+            'flake8-builtins>=1.5.3',
+            'flake8-annotations==2.6.2',
+            'flake8-print>=4.0.0',
+            'pep8-naming>=0.11.1',
+            'pre-commit>=2.12.1',
+            'pytest>=6.2.3',
         ],
     },
     entry_points={
         'console_scripts': [
-            'botblox=manager.__main__:main',
+            'botblox=botblox_config.__main__:main',
         ],
     },
 )

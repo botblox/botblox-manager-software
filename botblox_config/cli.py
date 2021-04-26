@@ -100,7 +100,6 @@ def create_parser(argv=None) -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(
         title='Individual group commands for each configuration',
         description='Please choose a certain command',
-        required=True,
     )
 
     # VLAN CLI
@@ -203,7 +202,9 @@ def create_parser(argv=None) -> argparse.ArgumentParser:
 def cli() -> None:
     parser = create_parser()
 
-    if len(sys.argv) <= 1:
+    if len(sys.argv) < 2:
+        sys.argv.append('--help')
+    elif len(sys.argv) == 3 and sys.argv[1] in ['--device', '-d']:
         sys.argv.append('--help')
 
     args = parser.parse_args()

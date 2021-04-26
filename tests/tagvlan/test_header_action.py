@@ -1,7 +1,7 @@
 from typing import List, AnyStr
 from pytest import CaptureFixture
 
-from manager.cli import create_parser
+from botblox_config.cli import create_parser
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
@@ -73,7 +73,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -A/--header-action: invalid VLANHeaderAction value: 'WRONG'"
+        expected_stderr_message = "tag-vlan: error: argument -A/--header-action: invalid VLANHeaderAction value: 'WRONG'"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -91,7 +91,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -A/--header-action: expected one argument"
+        expected_stderr_message = "tag-vlan: error: argument -A/--header-action: expected one argument"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -159,7 +159,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'botblox tag-vlan: error: argument -a/--port-header-action: Wrong value "WRONG" of ' \
+        expected_stderr_message = 'tag-vlan: error: argument -a/--port-header-action: Wrong value "WRONG" of ' \
                                   'argument "header_action", allowed values are {KEEP,ADD,STRIP}'
         actual_stderr: str = captured.err
 
@@ -180,7 +180,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'botblox tag-vlan: error: argument -a/--port-header-action: Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
+        expected_stderr_message = 'tag-vlan: error: argument -a/--port-header-action: Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -200,7 +200,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'botblox tag-vlan: error: argument -a/--port-header-action: Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
+        expected_stderr_message = 'tag-vlan: error: argument -a/--port-header-action: Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -219,7 +219,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -a/--port-header-action: expected 2 arguments"
+        expected_stderr_message = "tag-vlan: error: argument -a/--port-header-action: expected 2 arguments"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -237,7 +237,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "botblox tag-vlan: error: argument -a/--port-header-action: expected 2 arguments"
+        expected_stderr_message = "tag-vlan: error: argument -a/--port-header-action: expected 2 arguments"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -314,7 +314,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'botblox: error: unrecognized arguments: --port-vlan-header-action 1 2 KEEP'
+        expected_stderr_message = 'error: unrecognized arguments: --port-vlan-header-action 1 2 KEEP'
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1

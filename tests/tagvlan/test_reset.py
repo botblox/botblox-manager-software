@@ -1,6 +1,6 @@
 from typing import List
 
-from manager.cli import create_parser
+from botblox_config.cli import create_parser
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args
 
@@ -9,7 +9,7 @@ class TestSetReset:
     package: List[str] = ['botblox']
     base_args: List[str] = [
         '--device',
-        'usb_usart_converter_device',
+        'test',
         '--switch',
         'switchblox',
         'tag-vlan',
