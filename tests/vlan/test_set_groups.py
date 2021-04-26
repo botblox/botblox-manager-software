@@ -7,6 +7,8 @@ from typing import (
     Tuple,
 )
 
+from manager.cli import create_parser
+
 
 class TestSetGroups:
     package: List[str] = ['botblox']
@@ -47,7 +49,6 @@ class TestSetGroups:
 
     def test_2x2_groups_1_isolated(
         self,
-        parser: ArgumentParser,
     ) -> None:
         args = self.base_args + [
             '--group',
@@ -58,7 +59,7 @@ class TestSetGroups:
             '4',
         ]
 
-        data = self._get_data_from_cli_args(parser=parser, args=args)
+        data = self._get_data_from_cli_args(parser=create_parser(args), args=args)
         self._assert_data_is_correct_type(data=data)
 
         expected_result = [[23, 16, 12, 12], [23, 17, 80, 0], [23, 18, 80, 255]]

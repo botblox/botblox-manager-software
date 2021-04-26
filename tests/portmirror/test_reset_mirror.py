@@ -4,6 +4,8 @@ from typing import (
     List,
 )
 
+from manager.cli import create_parser
+
 
 class TestSetReset:
     package: List[str] = ['botblox']
@@ -37,10 +39,9 @@ class TestSetReset:
 
     def test_reset(
         self,
-        parser: ArgumentParser,
     ) -> None:
 
-        data = self._get_data_from_cli_args(parser=parser, args=self.base_args)
+        data = self._get_data_from_cli_args(parser=create_parser(self.base_args), args=self.base_args)
         self._assert_data_is_correct_type(data=data)
 
         expected_result = [[20, 4, 1, 224], [20, 3, 1, 0]]

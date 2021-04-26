@@ -11,6 +11,8 @@ from typing import (
 import pytest
 from pytest import CaptureFixture
 
+from manager.cli import create_parser
+
 
 class TestSetTxMode:
     package: List[str] = ['botblox']
@@ -53,7 +55,6 @@ class TestSetTxMode:
 
     def test_single_tx_port(
         self,
-        parser: ArgumentParser,
     ) -> None:
         test_args = self.base_args + [
             '-M',
@@ -62,7 +63,7 @@ class TestSetTxMode:
             '2',
         ]
 
-        data = self._get_data_from_cli_args(parser=parser, args=test_args)
+        data = self._get_data_from_cli_args(parser=create_parser(self.base_args), args=test_args)
         self._assert_data_is_correct_type(data=data)
 
         expected_result = [[20, 4, 8, 64], [20, 3, 1, 160]]
@@ -70,7 +71,6 @@ class TestSetTxMode:
 
     def test_multiple_tx_port(
         self,
-        parser: ArgumentParser,
     ) -> None:
         test_args = self.base_args + [
             '-M',
@@ -81,7 +81,7 @@ class TestSetTxMode:
             '4',
         ]
 
-        data = self._get_data_from_cli_args(parser=parser, args=test_args)
+        data = self._get_data_from_cli_args(parser=create_parser(self.base_args), args=test_args)
         self._assert_data_is_correct_type(data=data)
 
         expected_result = [[20, 4, 88, 64], [20, 3, 1, 160]]

@@ -11,6 +11,8 @@ import serial
 from .data_manager import (
     PortMirrorConfig,
     VlanConfig,
+    TagVlanConfigCLI,
+    EraseConfigCLI
 )
 
 logging.basicConfig(level=logging.DEBUG)
@@ -61,7 +63,7 @@ def write_data_to_serial(
             return False
 
 
-def create_parser() -> argparse.ArgumentParser:
+def create_parser(argv=None) -> argparse.ArgumentParser:
     """Define all cli parser and subparsers here."""
     parser = argparse.ArgumentParser(
         description='CLI for configuring SwitchBlox managed settings',
@@ -71,10 +73,29 @@ def create_parser() -> argparse.ArgumentParser:
         '-D',
         '--device',
         type=str,
-        help='Select the USB-to-UART converter device',
+        help='Select the USB-to-UART converter device. Set to "test" to disable actual writing to the serial line.',
         nargs='?',
         required=True,
     )
+    parser.add_argument(
+        '-S',
+        '--switch',
+        type=str,
+        choices=("switchblox", "switchblox_nano", "nano"),
+        help='Select the type of the connected switch (default is switchblox)',
+        nargs='?',
+        default="switchblox",
+        required=False,
+    )
+
+    try:
+        if argv is None:
+            argv = sys.argv
+        switch_namespace, _ = parser.parse_known_args(list(filter(lambda a: a != '-h' and a != '--help', argv)))
+        switch_name = switch_namespace.switch
+    except argparse.ArgumentError as e:
+        switch_name = "switchblox"
+        print(str(e))
 
     subparsers = parser.add_subparsers(
         title='Individual group commands for each configuration',
@@ -172,6 +193,10 @@ def create_parser() -> argparse.ArgumentParser:
     # (2)
     portmirror_parser_mutex_grouping.set_defaults(execute=PortMirrorConfig)
 
+    commands = list()
+    commands.append(TagVlanConfigCLI(subparsers, switch_name))
+    commands.append(EraseConfigCLI(subparsers, switch_name))
+
     return parser
 
 
@@ -200,9 +225,12 @@ def cli() -> None:
     logging.debug('------------------------------------------')
 
     device_name = args.device
-    is_success = write_data_to_serial(data=data, device_name=device_name)
+    if device_name != "test":
+        is_success = write_data_to_serial(data=data, device_name=device_name)
 
-    if is_success:
-        logging.info('Successful configuration')
+        if is_success:
+            logging.info('Successful configuration')
+        else:
+            logging.error('Failed to configure - check logs')
     else:
-        logging.error('Failed to configure - check logs')
+        logging.info('Test device used, no data were written to any serial port')

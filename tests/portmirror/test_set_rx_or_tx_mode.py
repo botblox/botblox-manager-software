@@ -5,6 +5,8 @@ from typing import Any, AnyStr, List, Tuple
 
 from pytest import CaptureFixture
 
+from manager.cli import create_parser
+
 
 class TestSetRxOrTxMode:
     package: List[str] = ['botblox']
@@ -47,7 +49,6 @@ class TestSetRxOrTxMode:
 
     def test_single_tx_and_single_rx_port(
         self,
-        parser: ArgumentParser,
     ) -> None:
         test_args = self.base_args + [
             '-M',
@@ -58,7 +59,7 @@ class TestSetRxOrTxMode:
             '3',
         ]
 
-        data = self._get_data_from_cli_args(parser=parser, args=test_args)
+        data = self._get_data_from_cli_args(parser=create_parser(self.base_args), args=test_args)
         self._assert_data_is_correct_type(data=data)
 
         expected_result = [[20, 4, 8, 64], [20, 3, 16, 224]]
@@ -66,7 +67,6 @@ class TestSetRxOrTxMode:
 
     def test_same_tx_and_rx_port(
         self,
-        parser: ArgumentParser,
     ) -> None:
         test_args = self.base_args + [
             '-M',
@@ -77,7 +77,7 @@ class TestSetRxOrTxMode:
             '2',
         ]
 
-        data = self._get_data_from_cli_args(parser=parser, args=test_args)
+        data = self._get_data_from_cli_args(parser=create_parser(self.base_args), args=test_args)
         self._assert_data_is_correct_type(data=data)
 
         expected_result = [[20, 4, 8, 64], [20, 3, 8, 224]]

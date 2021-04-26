@@ -4,13 +4,12 @@ from typing import (Any, List)
 from manager.cli import create_parser
 
 
-class TestSetReset:
+class TestErase:
     package: List[str] = ['botblox']
     base_args: List[str] = [
         '--device',
         'usb_usart_converter_device',
-        'vlan',
-        '--reset',
+        'erase',
     ]
 
     @staticmethod
@@ -34,7 +33,7 @@ class TestSetReset:
         config = parsed_args.execute(parsed_args)
         return config.create_configuration()
 
-    def test_reset(
+    def test_erase(
         self,
     ) -> None:
         data = self._get_data_from_cli_args(
@@ -43,5 +42,5 @@ class TestSetReset:
         )
         self._assert_data_is_correct_type(data=data)
 
-        expected_result = [[23, 16, 255, 255], [23, 17, 255, 0], [23, 18, 255, 255]]
+        expected_result = [[101, 0, 0, 0]]
         assert data == expected_result
