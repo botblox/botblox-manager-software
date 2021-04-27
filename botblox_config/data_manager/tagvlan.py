@@ -20,12 +20,18 @@ from ..switch.ip175g import IP175G
 
 
 class VLAN:
+    """
+    A VLAN table entry representation.
+    """
     def __init__(self, vlan_id: int, members: List[Port] = None):
         self.vlan_id: int = vlan_id
         self.members: List[Port] = members if members is not None else list()
 
 
 class VLANMode(Enum):
+    """
+    VLAN mode specifies how the switch handles packets based on their assigned VLAN ID.
+    """
     DISABLED = "DISABLED"  # VLAN ID is ignored
     OPTIONAL = "OPTIONAL"  # VLAN ID handled, VLAN ID does not need to be in VLAN table
     ENABLED = "ENABLED"  # VLAN ID handled, VLAN ID needs to be in VLAN table
@@ -36,15 +42,21 @@ class VLANMode(Enum):
 
 
 class VLANHeaderAction(Enum):
-    KEEP = "KEEP"
-    ADD = "ADD"
-    STRIP = "STRIP"
+    """
+    What to do with the 802.1Q header of outgoing packets.
+    """
+    KEEP = "KEEP"  # Keep the header as it was in the packet on ingress.
+    ADD = "ADD"  # Always add 802.1Q header to outgoing packets.
+    STRIP = "STRIP"  # Remove the 802.1Q header from all outgoing packets.
 
     def __str__(self):
         return self.value
 
 
 class VLANReceiveMode(Enum):
+    """
+    What to do with tagged/untagged ingress packets.
+    """
     ANY = "ANY"  # allow receiving both tagged and untagged packets
     ONLY_TAGGED = "ONLY_TAGGED"  # allow receiving only tagged packets
     ONLY_UNTAGGED = "ONLY_UNTAGGED"  # allow receiving only untagged packets
@@ -54,6 +66,9 @@ class VLANReceiveMode(Enum):
 
 
 class VLANPortConfig:
+    """
+    Port-related configuration of VLANs.
+    """
     def __init__(self,
                  port: Port,
                  default_vlan_id: Optional[int] = None,
@@ -72,6 +87,9 @@ class VLANPortConfig:
 
 
 class TagVlanConfig(SwitchConfig):
+    """
+    Configuration of Tagged VLANs.
+    """
     def __init__(self, switch: SwitchChip):
         super().__init__(switch)
 
@@ -309,6 +327,9 @@ class TagVlanConfig(SwitchConfig):
 
 
 class TagVlanConfigCLI(SwitchConfigCLI):
+    """
+    CLI parser for the tag-vlan command.
+    """
     def __init__(self, subparsers, switch_name: AnyStr):
         super().__init__(subparsers, switch_name)
 

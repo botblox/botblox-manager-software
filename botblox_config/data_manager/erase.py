@@ -8,6 +8,9 @@ from .switch_config import SwitchConfigCLI
 
 
 class EraseConfigCLI(SwitchConfigCLI):
+    """
+    The "erase" action that removes all stored items from the EEPROM memory.
+    """
     def __init__(self, subparsers, switch_name: AnyStr):
         super().__init__(subparsers, switch_name)
 

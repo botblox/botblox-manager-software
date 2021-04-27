@@ -4,6 +4,7 @@ from .switch import SwitchChip, SwitchFeature, Port, Register, BitField, BitsFie
 
 
 class IP175G(SwitchChip):
+    """The Microchip IP175G chip used in Switchblox and Switchblox Nano."""
 
     def __init__(self, nano: bool = False):
         self._nano = nano
