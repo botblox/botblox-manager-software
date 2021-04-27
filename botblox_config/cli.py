@@ -9,10 +9,10 @@ from typing import List
 import serial
 
 from .data_manager import (
+    EraseConfigCLI,
     PortMirrorConfig,
-    VlanConfig,
     TagVlanConfigCLI,
-    EraseConfigCLI
+    VlanConfig,
 )
 
 logging.basicConfig(level=logging.DEBUG)
@@ -63,7 +63,7 @@ def write_data_to_serial(
             return False
 
 
-def create_parser(argv=None) -> argparse.ArgumentParser:
+def create_parser(argv: List[str] = None) -> argparse.ArgumentParser:
     """Define all cli parser and subparsers here."""
     parser = argparse.ArgumentParser(
         description='CLI for configuring SwitchBlox managed settings',
@@ -95,7 +95,7 @@ def create_parser(argv=None) -> argparse.ArgumentParser:
         switch_name = switch_namespace.switch
     except argparse.ArgumentError as e:
         switch_name = "switchblox"
-        print(str(e))
+        logging.error(str(e))
 
     subparsers = parser.add_subparsers(
         title='Individual group commands for each configuration',

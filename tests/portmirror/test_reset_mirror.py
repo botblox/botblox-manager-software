@@ -1,8 +1,4 @@
-from argparse import ArgumentParser
-from typing import (
-    Any,
-    List,
-)
+from typing import List
 
 from botblox_config.cli import create_parser
 

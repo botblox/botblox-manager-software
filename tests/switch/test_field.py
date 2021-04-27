@@ -1,20 +1,20 @@
 from typing import List
 
-from botblox_config.switch.switch import Register, SwitchChip, BitField, BitsField, ByteField, ShortField,\
-    PortListField, Port
+from botblox_config.switch.switch import BitField, BitsField, ByteField, Port, PortListField, Register, ShortField, \
+    SwitchChip
 
 
 class StubPortListField(PortListField):
-    def __init__(self, register: Register, index: int, ports: List[Port], ports_default: bool, name: str):
+    def __init__(self, register: Register, index: int, ports: List[Port], ports_default: bool, name: str) -> None:
         super().__init__(register, ports, ports_default, name)
 
-    def _add_port(self, port: Port, touch: bool = True):
+    def _add_port(self, port: Port, touch: bool = True) -> None:
         pass
 
-    def _remove_port(self, port: Port, touch: bool = True):
+    def _remove_port(self, port: Port, touch: bool = True) -> None:
         pass
 
-    def _clear(self, touch: bool = True):
+    def _clear(self, touch: bool = True) -> None:
         pass
 
 
@@ -22,18 +22,18 @@ class ChipStub(SwitchChip):
     def name(self) -> str:
         return "stub"
 
-    def _init_features(self):
+    def _init_features(self) -> None:
         pass
 
-    def _init_ports(self):
+    def _init_ports(self) -> None:
         self._ports.append(Port("0", 0))
         self._ports.append(Port("1", 1))
         self._ports.append(Port("2", 3))
 
-    def _init_registers(self):
+    def _init_registers(self) -> None:
         pass
 
-    def _init_fields(self):
+    def _init_fields(self) -> None:
         pass
 
     def _create_port_list_field(self, register: Register, index: int, ports_default: bool, name: str) -> PortListField:
@@ -41,46 +41,46 @@ class ChipStub(SwitchChip):
 
 
 class TestField:
-    def test_bit_field(self):
+    def test_bit_field(self) -> None:
         r = Register(1, 2, ChipStub())
         f = BitField(r, 0, False, "test")
 
         assert f.get_name() == "test"
-        assert f.get_value() == False
+        assert f.get_value() == False  # noqa: E712
         assert f.is_default()
         assert r.as_number() == 0
 
         f.set_value(True)
-        assert f.get_value() == True
+        assert f.get_value() == True  # noqa: E712
         assert not f.is_default()
         assert r.as_number() == 1
 
         f.set_default()
-        assert f.get_value() == False
+        assert f.get_value() == False  # noqa: E712
         assert f.is_default()
         assert r.as_number() == 0
 
         f2 = BitField(r, 10, True, "test2")
 
         assert f2.get_name() == "test2"
-        assert f2.get_value() == True
+        assert f2.get_value() == True  # noqa: E712
         assert f2.is_default()
         assert r.as_number() == 0b0000_0100_0000_0000
 
         f2.set_value(False)
-        assert f2.get_value() == False
+        assert f2.get_value() == False  # noqa: E712
         assert not f2.is_default()
         assert r.as_number() == 0
 
         f2.set_default()
-        assert f2.get_value() == True
+        assert f2.get_value() == True  # noqa: E712
         assert f2.is_default()
         assert r.as_number() == 0b0000_0100_0000_0000
 
         f.set_value(True)
         assert r.as_number() == 0b0000_0100_0000_0001
 
-    def test_bits_field(self):
+    def test_bits_field(self) -> None:
         r = Register(1, 2, ChipStub())
         f = BitsField(r, 6, 4, 0b0000, "test")
 
@@ -127,7 +127,7 @@ class TestField:
         assert f.get_value() == 0b0110
         assert r.as_number() == 0b0000_0001_1001_1100
 
-    def test_byte_field(self):
+    def test_byte_field(self) -> None:
         r = Register(1, 2, ChipStub())
         f = ByteField(r, 0, 0, "test")
 
@@ -166,7 +166,7 @@ class TestField:
         f.set_value(0xCC)
         assert r.as_number() == 0xDDCC
 
-    def test_short_field(self):
+    def test_short_field(self) -> None:
         r = Register(1, 2, ChipStub())
         f = ShortField(r, 0, 0, "test")
 
@@ -185,7 +185,7 @@ class TestField:
         assert f.is_default()
         assert r.as_number() == 0
 
-    def test_port_list_field(self):
+    def test_port_list_field(self) -> None:
         switch = ChipStub()
         assert len(switch.ports()) == 3
 

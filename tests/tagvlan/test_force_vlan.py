@@ -1,7 +1,7 @@
-from typing import List, AnyStr
-from pytest import CaptureFixture
+from typing import AnyStr, List
 
 from botblox_config.cli import create_parser
+from pytest import CaptureFixture
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
@@ -14,7 +14,7 @@ class TestSetGroups:
         'tag-vlan',
     ]
 
-    def test_force_all(self):
+    def test_force_all(self) -> None:
         args = self.base_args + [
             '--force-vlan-id',
         ]
@@ -27,7 +27,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_force_one(self):
+    def test_force_one(self) -> None:
         args = self.base_args + [
             '--force-vlan-id',
             '2',
@@ -41,7 +41,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_force_two(self):
+    def test_force_two(self) -> None:
         args = self.base_args + [
             '--force-vlan-id',
             '2',

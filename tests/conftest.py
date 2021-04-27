@@ -1,11 +1,8 @@
 import argparse
-import os
 import subprocess
 import sys
 from functools import reduce
 from typing import Any, List, Tuple
-
-import pytest
 
 
 def assert_ip175g_command_is_correct_type(
@@ -34,6 +31,6 @@ def run_command_to_error(
 ) -> None:
     if len(args) > 0 and len(args[0]) > 0 and args[0][0] == "botblox":
         args = ([sys.executable, "-m", "botblox_config"],) + args[1:]
-    command: List[str] = reduce(lambda command, arg: command + arg, args)
+    command: List[str] = reduce(lambda comm, arg: comm + arg, args)
     cli_status_code: int = subprocess.call(command)
     assert cli_status_code > 0, 'The command did not exit with an error code'

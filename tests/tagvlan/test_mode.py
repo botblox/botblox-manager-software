@@ -1,7 +1,7 @@
-from typing import List, AnyStr
-from pytest import CaptureFixture
+from typing import AnyStr, List
 
 from botblox_config.cli import create_parser
+from pytest import CaptureFixture
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
@@ -14,7 +14,7 @@ class TestSetGroups:
         'tag-vlan',
     ]
 
-    def test_mode_disabled(self):
+    def test_mode_disabled(self) -> None:
         args = self.base_args + [
             '--vlan-mode',
             'DISABLED',
@@ -29,7 +29,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_mode_optional(self):
+    def test_mode_optional(self) -> None:
         args = self.base_args + [
             '--vlan-mode',
             'OPTIONAL',
@@ -44,7 +44,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_mode_enabled(self):
+    def test_mode_enabled(self) -> None:
         args = self.base_args + [
             '--vlan-mode',
             'ENABLED',
@@ -60,7 +60,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_mode_strict(self):
+    def test_mode_strict(self) -> None:
         args = self.base_args + [
             '--vlan-mode',
             'STRICT',
@@ -113,7 +113,7 @@ class TestSetGroups:
 
         assert actual_stderr.find(expected_stderr_message) > -1
 
-    def test_port_mode_disabled(self):
+    def test_port_mode_disabled(self) -> None:
         args = self.base_args + [
             '--port-vlan-mode',
             '2',
@@ -129,7 +129,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_mode_optional(self):
+    def test_port_mode_optional(self) -> None:
         args = self.base_args + [
             '--port-vlan-mode',
             '2',
@@ -145,7 +145,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_mode_enabled(self):
+    def test_port_mode_enabled(self) -> None:
         args = self.base_args + [
             '--port-vlan-mode',
             '2',
@@ -162,7 +162,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_mode_strict(self):
+    def test_port_mode_strict(self) -> None:
         args = self.base_args + [
             '--port-vlan-mode',
             '2',
@@ -215,7 +215,8 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'tag-vlan: error: argument -m/--port-vlan-mode: Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
+        expected_stderr_message = 'tag-vlan: error: argument -m/--port-vlan-mode: ' \
+                                  'Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -235,7 +236,8 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'tag-vlan: error: argument -m/--port-vlan-mode: Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
+        expected_stderr_message = 'tag-vlan: error: argument -m/--port-vlan-mode: ' \
+                                  'Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -277,7 +279,7 @@ class TestSetGroups:
 
         assert actual_stderr.find(expected_stderr_message) > -1
 
-    def test_port_mode_two_ports_enabled(self):
+    def test_port_mode_two_ports_enabled(self) -> None:
         args = self.base_args + [
             '--port-vlan-mode',
             '2',
@@ -315,12 +317,13 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "tag-vlan: error: Switchblox can only have all its ports in mode DISABLED/OPTIONAL or all in ENABLED/STRICT, but not a combination of these two groups."
+        expected_stderr_message = "tag-vlan: error: Switchblox can only have all its ports in mode DISABLED/OPTIONAL " \
+                                  "or all in ENABLED/STRICT, but not a combination of these two groups."
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
 
-    def test_port_mode_with_default(self):
+    def test_port_mode_with_default(self) -> None:
         args = self.base_args + [
             '--vlan-mode',
             'ENABLED',

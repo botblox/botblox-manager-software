@@ -1,31 +1,31 @@
-from botblox_config.switch.switch import set_bit, get_bit
+from botblox_config.switch.switch import get_bit, set_bit
 
 
 class TestBitOps:
-    def test_get_bit(self):
+    def test_get_bit(self) -> None:
         num = 0b001
-        assert get_bit(num, 0) == True
-        assert get_bit(num, 1) == False
-        assert get_bit(num, 2) == False
-        assert get_bit(num, 3) == False
+        assert get_bit(num, 0) == True  # noqa: E712
+        assert get_bit(num, 1) == False  # noqa: E712
+        assert get_bit(num, 2) == False  # noqa: E712
+        assert get_bit(num, 3) == False  # noqa: E712
 
         num = 0b101010
-        assert get_bit(num, 0) == False
-        assert get_bit(num, 1) == True
-        assert get_bit(num, 2) == False
-        assert get_bit(num, 3) == True
-        assert get_bit(num, 4) == False
-        assert get_bit(num, 5) == True
+        assert get_bit(num, 0) == False  # noqa: E712
+        assert get_bit(num, 1) == True  # noqa: E712
+        assert get_bit(num, 2) == False  # noqa: E712
+        assert get_bit(num, 3) == True  # noqa: E712
+        assert get_bit(num, 4) == False  # noqa: E712
+        assert get_bit(num, 5) == True  # noqa: E712
 
         num = 0
         for i in range(30):
-            assert get_bit(num, i) == False
+            assert get_bit(num, i) == False  # noqa: E712
 
         num = 256 - 1
         for i in range(8):
-            assert get_bit(num, i) == True
+            assert get_bit(num, i) == True  # noqa: E712
 
-    def test_set_bit(self):
+    def test_set_bit(self) -> None:
         num = 0
         assert set_bit(num, 0, True) == 0b1
         assert set_bit(num, 3, True) == 0b1000

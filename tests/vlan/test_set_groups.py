@@ -1,15 +1,9 @@
-import subprocess
-from argparse import ArgumentParser
-from functools import reduce
-from typing import (
-    Any,
-    List,
-    Tuple,
-)
+from typing import List
 
 from botblox_config.cli import create_parser
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args
+
 
 class TestSetGroups:
     package: List[str] = ['botblox']

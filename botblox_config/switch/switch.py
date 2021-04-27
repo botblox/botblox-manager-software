@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Set, List, Dict, Union, AnyStr, Iterable, Optional
+from typing import AnyStr, Dict, Iterable, List, Optional, Set
 
 
 def get_bit(num: int, index: int) -> bool:
@@ -23,15 +23,15 @@ def set_bit(num: int, index: int, value: bool) -> int:
 
 
 class Port:
-    def __init__(self, name: str, id: int):
+    def __init__(self, name: str, port_id: int) -> None:
         """
         :param name: Name of the port. This name is used in CLI commands to refer to the port.
-        :param id: ID of the port. For internal use by the library.
+        :param port_id: ID of the port. For internal use by the library.
         """
         self.name = name
-        self.id = id
+        self.id = port_id
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name
 
 
@@ -57,7 +57,7 @@ class SwitchChip:
     """
     Representation of a switch chip and its configuration fields and registers.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         self._features: Set[SwitchFeature] = set()
         self._ports: List[Port] = list()
         self._registers: Dict[int, Dict[int, Register]] = dict()
@@ -152,37 +152,37 @@ class SwitchChip:
         result.sort()
         return result
 
-    def _init_features(self):
+    def _init_features(self) -> None:
         """
         Initialize self._features .
         """
         raise NotImplementedError()
 
-    def _init_ports(self):
+    def _init_ports(self) -> None:
         """
-        Initialize self._ports. 
-        """
-        raise NotImplementedError()
-
-    def _init_registers(self):
-        """
-        Initialize self._registers. 
+        Initialize self._ports.
         """
         raise NotImplementedError()
 
-    def _init_fields(self):
+    def _init_registers(self) -> None:
         """
-        Initialize self._fields. 
+        Initialize self._registers.
         """
         raise NotImplementedError()
 
-    def get_registers(self):
+    def _init_fields(self) -> None:
+        """
+        Initialize self._fields.
+        """
+        raise NotImplementedError()
+
+    def get_registers(self) -> Dict[int, Dict[int, 'Register']]:
         """
         :return: All registers of the switch.
         """
         return self._registers
 
-    def _add_register(self, register: 'Register'):
+    def _add_register(self, register: 'Register') -> None:
         """
         Add the given register to this switch. This method should only be called during initialization.
         :param register: The register to add.
@@ -191,14 +191,15 @@ class SwitchChip:
             self._registers[register.phy] = dict()
         self._registers[register.phy][register.mii] = register
 
-    def _add_field(self, field: 'MIIField'):
+    def _add_field(self, field: 'MIIField') -> None:
         """
         Add the given field to this switch. This method should only be called during initialization.
         :param field: The field to add.
         """
         self.fields[field.get_name()] = field
 
-    def _create_port_list_field(self, register: 'Register', index: int, ports_default: bool, name: str) -> 'PortListField':
+    def _create_port_list_field(self, register: 'Register', index: int, ports_default: bool, name: str)\
+            -> 'PortListField':
         """
         Create a field that represents a bitmask (or other representation) of a set/list of ports.
         :param register: The register that backs this list.
@@ -209,7 +210,7 @@ class SwitchChip:
         """
         raise NotImplementedError()
 
-    def check_vlan_id(self, vlan_id: int):
+    def check_vlan_id(self, vlan_id: int) -> None:
         """
         Check whether the given VLAN ID is valid.
         :param vlan_id: The ID to check.
@@ -219,7 +220,7 @@ class SwitchChip:
             raise ValueError("VLAN ID {} is invalid for {} with max VLAN ID {}".format(
                              vlan_id, self.name(), self.max_vlan_id()))
 
-    def has_feature(self, feature: SwitchFeature):
+    def has_feature(self, feature: SwitchFeature) -> bool:
         """
         Check if this switch has the given feature.
         :param feature: The feature to check.
@@ -227,7 +228,7 @@ class SwitchChip:
         """
         return feature in self._features
 
-    def check_feature(self, feature: SwitchFeature):
+    def check_feature(self, feature: SwitchFeature) -> None:
         """
         Check that this switch has the given feature.
         :param feature: The feature to check.
@@ -243,7 +244,7 @@ class Register:
     A memory register on the switch.
     """
 
-    def __init__(self, phy: int, mii: int, chip: SwitchChip):
+    def __init__(self, phy: int, mii: int, chip: SwitchChip) -> None:
         """
         :param phy: PHY address.
         :param mii: MII address.
@@ -255,25 +256,27 @@ class Register:
         self.data: bytearray = bytearray(chip.num_mii_bytes())  # lowest byte first
         self._fields = list()
 
-    def check_byte_index(self, index: int):
+    def check_byte_index(self, index: int) -> None:
         """
         Check that the given index is valid as offset for a byte field in the register.
         :param index: The index to check.
         :raise ValueError: If the index is invalid.
         """
         if index >= self.chip.num_mii_bytes() or index < 0:
-            raise ValueError("Wrong byte index {} for switch chip with {}-byte registers".format(index, self.chip.num_mii_bytes()))
+            raise ValueError("Wrong byte index {} for switch chip with {}-byte registers".format(
+                index, self.chip.num_mii_bytes()))
 
-    def check_bit_index(self, index: int):
+    def check_bit_index(self, index: int) -> None:
         """
         Check that the given index is valid as offset for a bit field in the register.
         :param index: The index to check.
         :raise ValueError: If the index is invalid.
         """
         if index >= 8 * self.chip.num_mii_bytes() or index < 0:
-            raise ValueError("Wrong bit index {} for switch chip with {}-byte registers".format(index, self.chip.num_mii_bytes()))
+            raise ValueError("Wrong bit index {} for switch chip with {}-byte registers".format(
+                index, self.chip.num_mii_bytes()))
 
-    def check_bits_spec(self, offset: int, length: int):
+    def check_bits_spec(self, offset: int, length: int) -> None:
         """
         Check that the given offset and length specify a valid subset of indexes in the register.
         :param offset: The offset of the bits field.
@@ -305,7 +308,7 @@ class Register:
         self.check_byte_index(index)
         return self.data[index]
 
-    def set_byte(self, index: int, value: int):
+    def set_byte(self, index: int, value: int) -> None:
         """
         Set value of the byte at the given index.
         :param index: Index of the byte.
@@ -327,7 +330,7 @@ class Register:
         bit_offset = index % 8
         return get_bit(self.data[byte_index], bit_offset)
 
-    def set_bit(self, index: int, value: bool):
+    def set_bit(self, index: int, value: bool) -> None:
         """
         Set value of the bit at the given index.
         :param index: Index of the bit.
@@ -350,7 +353,7 @@ class Register:
         mask = (pow(2, length) - 1) << offset
         return (num & mask) >> offset
 
-    def set_bits(self, offset: int, length: int, value: int):
+    def set_bits(self, offset: int, length: int, value: int) -> None:
         """
         Set the value of the bits at the given offset.
         :param offset: Starting offset of the bits (counted from LSB).
@@ -367,7 +370,7 @@ class Register:
         num += (value << offset)
         self.data = bytearray(num.to_bytes(len(self.data), byteorder='little', signed=False))
 
-    def add_field(self, field: 'MIIField'):
+    def add_field(self, field: 'MIIField') -> None:
         """
         Attach the given field to this register.
         :param field: The field to add.
@@ -397,7 +400,7 @@ class MIIField:
     """
     Configuration field of a switch.
     """
-    def __init__(self, register: Register, name: str):
+    def __init__(self, register: Register, name: str) -> None:
         """
         :param register: The register on which this field works.
         :param name: Name of the field.
@@ -419,7 +422,7 @@ class MIIField:
         """
         raise NotImplementedError()
 
-    def set_default(self, touch=True):
+    def set_default(self, touch: bool = True) -> None:
         """
         Set the field to its default value.
         :param touch: Whether to set the touched flag.
@@ -440,7 +443,7 @@ class DataField(MIIField):
     """
     A general data-holding field.
     """
-    def __init__(self, register: Register, default: int, name: str):
+    def __init__(self, register: Register, default: int, name: str) -> None:
         """
         :param register: The register on which this field works.
         :param default: Default value of the field.
@@ -455,7 +458,7 @@ class DataField(MIIField):
         """
         raise NotImplementedError()
 
-    def set_value(self, value: int, touch=True):
+    def set_value(self, value: int, touch: bool = True) -> None:
         """
         Set value of the field.
         :param value: The value to set.
@@ -466,7 +469,7 @@ class DataField(MIIField):
     def is_default(self) -> bool:
         return self.get_value() == self._default
 
-    def set_default(self, touch=True):
+    def set_default(self, touch: bool = True) -> None:
         self.set_value(self._default, touch)
 
     def __str__(self) -> str:
@@ -477,7 +480,7 @@ class BitField(DataField):
     """
     A field holding a single bit.
     """
-    def __init__(self, register: Register, index: int, default: bool, name: str):
+    def __init__(self, register: Register, index: int, default: bool, name: str) -> None:
         super().__init__(register, default, name)
         self._index = index
         self.set_value(default, touch=False)
@@ -485,7 +488,7 @@ class BitField(DataField):
     def get_value(self) -> bool:
         return self._register.get_bit(self._index)
 
-    def set_value(self, value: bool, touch=True):
+    def set_value(self, value: bool, touch: bool = True) -> None:
         self._register.set_bit(self._index, value)
         if touch:
             self._touched = True
@@ -498,7 +501,7 @@ class BitsField(DataField):
     """
     A field holding a sequence of bits.
     """
-    def __init__(self, register: Register, offset: int, length: int, default: int, name: str):
+    def __init__(self, register: Register, offset: int, length: int, default: int, name: str) -> None:
         super().__init__(register, default, name)
         self._offset = offset
         self._length = length
@@ -507,7 +510,7 @@ class BitsField(DataField):
     def get_value(self) -> int:
         return self._register.get_bits(self._offset, self._length)
 
-    def set_value(self, value: int, touch=True):
+    def set_value(self, value: int, touch: bool = True) -> None:
         self._register.set_bits(self._offset, self._length, value)
         if touch:
             self._touched = True
@@ -515,7 +518,7 @@ class BitsField(DataField):
     def get_bit(self, index: int) -> bool:
         return get_bit(self.get_value(), index)
 
-    def set_bit(self, index: int, value: bool):
+    def set_bit(self, index: int, value: bool) -> None:
         self.set_value(set_bit(self.get_value(), index, value))
 
     def __str__(self) -> str:
@@ -526,7 +529,7 @@ class ByteField(DataField):
     """
     A field holding one byte.
     """
-    def __init__(self, register: Register, index: int, default: int, name: str):
+    def __init__(self, register: Register, index: int, default: int, name: str) -> None:
         super().__init__(register, default, name)
         self._index = index
         self.set_value(default, touch=False)
@@ -534,7 +537,7 @@ class ByteField(DataField):
     def get_value(self) -> int:
         return self._register.get_byte(self._index)
 
-    def set_value(self, value: int, touch=True):
+    def set_value(self, value: int, touch: bool = True) -> None:
         self._register.set_byte(self._index, value)
         if touch:
             self._touched = True
@@ -547,7 +550,7 @@ class ShortField(DataField):
     """
     A field holding one 16-bit number.
     """
-    def __init__(self, register: Register, byte_offset: int, default: int, name: str):
+    def __init__(self, register: Register, byte_offset: int, default: int, name: str) -> None:
         super().__init__(register, default, name)
         self._byte_offset = byte_offset
         self.set_value(default, touch=False)
@@ -555,7 +558,7 @@ class ShortField(DataField):
     def get_value(self) -> int:
         return self._register.get_byte(self._byte_offset) + (self._register.get_byte(self._byte_offset + 1) * 256)
 
-    def set_value(self, value: int, touch=True):
+    def set_value(self, value: int, touch: bool = True) -> None:
         self._register.set_byte(self._byte_offset, value % 256)
         self._register.set_byte(self._byte_offset + 1, value // 256)
         if touch:
@@ -569,7 +572,7 @@ class PortListField(MIIField):
     """
     A field holding a set/list of ports.
     """
-    def __init__(self, register: Register, all_ports: List[Port], ports_default: bool, name: str):
+    def __init__(self, register: Register, all_ports: List[Port], ports_default: bool, name: str) -> None:
         """
         :param register: The register on which this field works.
         :param all_ports: List of all available ports.
@@ -583,7 +586,7 @@ class PortListField(MIIField):
         if ports_default:
             self._ports = dict([(p.id, p) for p in self._all_ports])
 
-    def add_port(self, port: Port, touch: bool = True):
+    def add_port(self, port: Port, touch: bool = True) -> None:
         """
         Add the given port to the list.
         :param port: The port to add.
@@ -595,13 +598,13 @@ class PortListField(MIIField):
         self._ports[port.id] = port
         self._add_port(port, touch)
 
-    def _add_port(self, port: Port, touch: bool = True):
+    def _add_port(self, port: Port, touch: bool = True) -> None:
         """
         Switch-specific implementation.
         """
         raise NotImplementedError()
 
-    def remove_port(self, port: Port, touch: bool = True):
+    def remove_port(self, port: Port, touch: bool = True) -> None:
         """
         Remove the given port from the list.
         :param port: The port to remove.
@@ -613,13 +616,13 @@ class PortListField(MIIField):
         del self._ports[port.id]
         self._remove_port(port)
 
-    def _remove_port(self, port: Port, touch: bool = True):
+    def _remove_port(self, port: Port, touch: bool = True) -> None:
         """
         Switch-specific implementation.
         """
         raise NotImplementedError()
 
-    def set_port(self, port: Port, value: bool, touch: bool = True):
+    def set_port(self, port: Port, value: bool, touch: bool = True) -> None:
         """
         Set the given port in this list (True adds it, False removes it).
         :param port: The port to handle.
@@ -631,7 +634,7 @@ class PortListField(MIIField):
         else:
             self.remove_port(port, touch)
 
-    def clear(self, touch: bool = True):
+    def clear(self, touch: bool = True) -> None:
         """
         Remove all ports from the list.
         :param touch: Whether to set the touched flag.
@@ -640,7 +643,7 @@ class PortListField(MIIField):
         self._ports.clear()
         self._clear(touch)
 
-    def _clear(self, touch: bool = True):
+    def _clear(self, touch: bool = True) -> None:
         """
         Switch-specific implementation.
         """
@@ -666,7 +669,7 @@ class PortListField(MIIField):
         """
         return (len(self._ports) > 0) == self._ports_default
 
-    def set_default(self, touch: bool = True):
+    def set_default(self, touch: bool = True) -> None:
         """
         Set this field to its default value.
         :param touch: Whether to set the touched flag.

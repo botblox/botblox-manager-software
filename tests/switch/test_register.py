@@ -1,20 +1,20 @@
-from botblox_config.switch.switch import Register, SwitchChip, PortListField
+from botblox_config.switch.switch import PortListField, Register, SwitchChip
 
 
 class ChipStub(SwitchChip):
     def name(self) -> str:
         return "stub"
 
-    def _init_features(self):
+    def _init_features(self) -> None:
         pass
 
-    def _init_ports(self):
+    def _init_ports(self) -> None:
         pass
 
-    def _init_registers(self):
+    def _init_registers(self) -> None:
         pass
 
-    def _init_fields(self):
+    def _init_fields(self) -> None:
         pass
 
     def _create_port_list_field(self, register: Register, index: int, ports_default: bool,
@@ -23,7 +23,7 @@ class ChipStub(SwitchChip):
 
 
 class TestRegister:
-    def test_register_zero(self):
+    def test_register_zero(self) -> None:
         r = Register(1, 2, ChipStub())
         assert r.phy == 1
         assert r.mii == 2
@@ -63,7 +63,7 @@ class TestRegister:
         except ValueError:
             pass
 
-    def test_register_set_bit_in_first_byte(self):
+    def test_register_set_bit_in_first_byte(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_bit(0, True)
         assert r.phy == 3
@@ -82,7 +82,7 @@ class TestRegister:
         assert r.as_number(signed=True) == 1
         assert r.is_default()
 
-    def test_register_set_bit_in_second_byte(self):
+    def test_register_set_bit_in_second_byte(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_bit(10, True)
         assert r.as_bytes()[0] == 0
@@ -99,7 +99,7 @@ class TestRegister:
         assert r.as_number() == 0b0000_0100_0000_0000
         assert r.as_number(signed=True) == 0b0000_0100_0000_0000
 
-    def test_register_set_two_bits(self):
+    def test_register_set_two_bits(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_bit(2, True)
         r.set_bit(10, True)
@@ -119,7 +119,7 @@ class TestRegister:
         assert r.as_number() == 0b0000_0100_0000_0100
         assert r.as_number(signed=True) == 0b0000_0100_0000_0100
 
-    def test_register_reset_bit(self):
+    def test_register_reset_bit(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_bit(2, True)
         r.set_bit(2, False)
@@ -136,13 +136,13 @@ class TestRegister:
         assert r.as_number() == 0
         assert r.as_number(signed=True) == 0
 
-    def test_register_set_bit_as_signed(self):
+    def test_register_set_bit_as_signed(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_bit(15, True)
         assert r.as_number() == pow(2, 15)
         assert r.as_number(signed=True) == -pow(2, 15)
 
-    def test_register_set_first_byte(self):
+    def test_register_set_first_byte(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_byte(0, 100)
         assert len(r.as_bytes()) == 2
@@ -154,7 +154,7 @@ class TestRegister:
         assert r.as_number() == 100
         assert r.as_number(signed=True) == 100
 
-    def test_register_set_second_byte(self):
+    def test_register_set_second_byte(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_byte(1, 0xCC)
         assert len(r.as_bytes()) == 2
@@ -166,7 +166,7 @@ class TestRegister:
         assert r.as_number() == 0xCC00
         assert r.as_number(signed=True) == -13312
 
-    def test_register_set_both_bytes(self):
+    def test_register_set_both_bytes(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_byte(0, 0xCC)
         r.set_byte(1, 0xDD)
@@ -178,7 +178,7 @@ class TestRegister:
 
         assert r.as_number() == 0xDDCC
 
-    def test_register_set_bits(self):
+    def test_register_set_bits(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_bits(6, 4, 0b1010)
         assert r.as_bytes()[0] == 0b1000_0000
@@ -194,7 +194,7 @@ class TestRegister:
 
         assert r.as_number() == 0b0000_0010_1000_0000
 
-    def test_register_set_all_bits(self):
+    def test_register_set_all_bits(self) -> None:
         r = Register(3, 4, ChipStub())
         r.set_bits(0, 16, 0b1010_0101_1100_1111)
         assert r.as_bytes()[0] == 0b1100_1111

@@ -1,7 +1,7 @@
-from typing import List, AnyStr
-from pytest import CaptureFixture
+from typing import AnyStr, List
 
 from botblox_config.cli import create_parser
+from pytest import CaptureFixture
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
@@ -14,7 +14,7 @@ class TestSetGroups:
         'tag-vlan',
     ]
 
-    def test_all_ports(self):
+    def test_all_ports(self) -> None:
         args = self.base_args + [
             '--default-vlan',
             '20',
@@ -32,7 +32,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_only(self):
+    def test_port_only(self) -> None:
         args = self.base_args + [
             '--port-default-vlan',
             '2',
@@ -47,7 +47,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_mixed(self):
+    def test_mixed(self) -> None:
         args = self.base_args + [
             '--default-vlan',
             '20',
@@ -124,7 +124,7 @@ class TestSetGroups:
 
         assert actual_stderr.find(expected_stderr_message) > -1
 
-    def test_port(self):
+    def test_port(self) -> None:
         args = self.base_args + [
             '--port-default-vlan',
             '2',
@@ -139,7 +139,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_ports(self):
+    def test_ports(self) -> None:
         args = self.base_args + [
             '--port-default-vlan',
             '2',
@@ -194,7 +194,8 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'tag-vlan: error: argument -d/--port-default-vlan: Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
+        expected_stderr_message = 'tag-vlan: error: argument -d/--port-default-vlan: ' \
+                                  'Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1

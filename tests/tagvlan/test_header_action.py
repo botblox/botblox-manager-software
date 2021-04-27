@@ -1,7 +1,7 @@
-from typing import List, AnyStr
-from pytest import CaptureFixture
+from typing import AnyStr, List
 
 from botblox_config.cli import create_parser
+from pytest import CaptureFixture
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
@@ -14,7 +14,7 @@ class TestSetGroups:
         'tag-vlan',
     ]
 
-    def test_action_keep(self):
+    def test_action_keep(self) -> None:
         args = self.base_args + [
             '--header-action',
             'KEEP',
@@ -29,7 +29,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_action_add(self):
+    def test_action_add(self) -> None:
         args = self.base_args + [
             '--header-action',
             'ADD',
@@ -44,7 +44,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_action_strip(self):
+    def test_action_strip(self) -> None:
         args = self.base_args + [
             '--header-action',
             'STRIP',
@@ -73,7 +73,8 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "tag-vlan: error: argument -A/--header-action: invalid VLANHeaderAction value: 'WRONG'"
+        expected_stderr_message = "tag-vlan: error: argument -A/--header-action: " \
+                                  "invalid VLANHeaderAction value: 'WRONG'"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -96,7 +97,7 @@ class TestSetGroups:
 
         assert actual_stderr.find(expected_stderr_message) > -1
 
-    def test_port_action_keep(self):
+    def test_port_action_keep(self) -> None:
         args = self.base_args + [
             '--port-header-action',
             '2',
@@ -112,7 +113,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_action_add(self):
+    def test_port_action_add(self) -> None:
         args = self.base_args + [
             '--port-header-action',
             '2',
@@ -128,7 +129,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_action_strip(self):
+    def test_port_action_strip(self) -> None:
         args = self.base_args + [
             '--port-header-action',
             '2',
@@ -180,7 +181,8 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'tag-vlan: error: argument -a/--port-header-action: Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
+        expected_stderr_message = 'tag-vlan: error: argument -a/--port-header-action: ' \
+                                  'Error in argument "port{1,2,3,4,5}": Invalid port \'a\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -200,7 +202,8 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = 'tag-vlan: error: argument -a/--port-header-action: Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
+        expected_stderr_message = 'tag-vlan: error: argument -a/--port-header-action: ' \
+                                  'Error in argument "port{1,2,3,4,5}": Invalid port \'6\''
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -242,7 +245,7 @@ class TestSetGroups:
 
         assert actual_stderr.find(expected_stderr_message) > -1
 
-    def test_port_action_two_ports_strip(self):
+    def test_port_action_two_ports_strip(self) -> None:
         args = self.base_args + [
             '--port-header-action',
             '2',
@@ -261,7 +264,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_action_two_ports_mixed(self):
+    def test_port_action_two_ports_mixed(self) -> None:
         args = self.base_args + [
             '--port-header-action',
             '2',
@@ -280,7 +283,7 @@ class TestSetGroups:
         ]
         assert data == expected_result
 
-    def test_port_action_with_default(self):
+    def test_port_action_with_default(self) -> None:
         args = self.base_args + [
             '--header-action',
             'STRIP',

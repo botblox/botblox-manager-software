@@ -3,27 +3,19 @@ import functools
 import logging
 from collections import defaultdict
 from enum import Enum
-from typing import (
-    Dict,
-    List,
-    Tuple,
-    Union,
-    cast,
-    AnyStr,
-    Optional
-)
+from typing import (AnyStr, cast, Dict, List, Optional, Tuple, Union)
 
 from .argparse_utils import add_multi_argument, IntRange
 from .switch_config import SwitchConfig, SwitchConfigCLI
-from ..switch.switch import Port, SwitchFeature, SwitchChip, BitField, BitsField, ShortField, PortListField
 from ..switch.ip175g import IP175G
+from ..switch.switch import BitField, BitsField, Port, PortListField, ShortField, SwitchChip, SwitchFeature
 
 
 class VLAN:
     """
     A VLAN table entry representation.
     """
-    def __init__(self, vlan_id: int, members: List[Port] = None):
+    def __init__(self, vlan_id: int, members: List[Port] = None) -> None:
         self.vlan_id: int = vlan_id
         self.members: List[Port] = members if members is not None else list()
 
@@ -37,7 +29,7 @@ class VLANMode(Enum):
     ENABLED = "ENABLED"  # VLAN ID handled, VLAN ID needs to be in VLAN table
     STRICT = "STRICT"  # VLAN ID handled, VLAN ID needs to be in VLAN table for the specific inbound port
 
-    def __str__(self):
+    def __str__(self) -> None:
         return self.value
 
 
@@ -49,7 +41,7 @@ class VLANHeaderAction(Enum):
     ADD = "ADD"  # Always add 802.1Q header to outgoing packets.
     STRIP = "STRIP"  # Remove the 802.1Q header from all outgoing packets.
 
-    def __str__(self):
+    def __str__(self) -> None:
         return self.value
 
 
@@ -61,7 +53,7 @@ class VLANReceiveMode(Enum):
     ONLY_TAGGED = "ONLY_TAGGED"  # allow receiving only tagged packets
     ONLY_UNTAGGED = "ONLY_UNTAGGED"  # allow receiving only untagged packets
 
-    def __str__(self):
+    def __str__(self) -> None:
         return self.value
 
 
@@ -76,7 +68,7 @@ class VLANPortConfig:
                  force_vlan_id: Optional[bool] = None,
                  receive_mode: Optional[VLANReceiveMode] = None,
                  header_action: Optional[VLANHeaderAction] = None,
-                 per_vlan_header_action: Optional[Dict[int, VLANHeaderAction]] = None):
+                 per_vlan_header_action: Optional[Dict[int, VLANHeaderAction]] = None) -> None:
         self.port: Port = port
         self.default_vlan_id: Optional[int] = default_vlan_id
         self.mode: Optional[VLANMode] = mode
@@ -90,7 +82,7 @@ class TagVlanConfig(SwitchConfig):
     """
     Configuration of Tagged VLANs.
     """
-    def __init__(self, switch: SwitchChip):
+    def __init__(self, switch: SwitchChip) -> None:
         super().__init__(switch)
 
         self._vlan_mode: Optional[VLANMode] = None
@@ -103,19 +95,19 @@ class TagVlanConfig(SwitchConfig):
 
         self._reset = False
 
-    def set_all_port_vlan_mode(self, mode: VLANMode):
+    def set_all_port_vlan_mode(self, mode: VLANMode) -> None:
         self._check_supports_vlan_mode(mode)
         self._vlan_mode = mode
 
-    def set_all_port_force_vlan_id(self, force: bool):
+    def set_all_port_force_vlan_id(self, force: bool) -> None:
         self._switch.check_feature(SwitchFeature.VLAN_FORCE)
         self._force_vlan_id = force
 
-    def set_all_port_receive_mode(self, mode: VLANReceiveMode):
+    def set_all_port_receive_mode(self, mode: VLANReceiveMode) -> None:
         self._switch.check_feature(SwitchFeature.TAGGED_VLAN)
         self._receive_mode = mode
 
-    def set_all_port_header_action(self, action: VLANHeaderAction):
+    def set_all_port_header_action(self, action: VLANHeaderAction) -> None:
         self._switch.check_feature(SwitchFeature.TAGGED_VLAN)
         self._header_action = action
 
@@ -126,7 +118,7 @@ class TagVlanConfig(SwitchConfig):
                         force_vlan_id: Optional[bool] = None,
                         receive_mode: Optional[VLANReceiveMode] = None,
                         header_action: Optional[VLANHeaderAction] = None,
-                        per_vlan_header_action: Optional[Dict[int, VLANHeaderAction]] = None):
+                        per_vlan_header_action: Optional[Dict[int, VLANHeaderAction]] = None) -> None:
         port_config = self._port_configs[self._ports().index(port)]
         if default_vlan_id is not None:
             self._switch.check_feature(SwitchFeature.TAGGED_VLAN)
@@ -154,21 +146,22 @@ class TagVlanConfig(SwitchConfig):
         self._switch.check_vlan_id(vlan_id)
         if vlan_id not in self._vlans:
             if len(self._vlans) >= self._switch.max_vlans():
-                raise RuntimeError("{} can only handle {} VLANs, but more were requested", self._switch.name(), self._switch.max_vlans())
+                raise RuntimeError("{} can only handle {} VLANs, but more were requested",
+                                   self._switch.name(), self._switch.max_vlans())
             vlan = VLAN(vlan_id)
             self._vlans[vlan_id] = vlan
             return vlan
         else:
             return self._vlans[vlan_id]
 
-    def remove_vlan(self, vlan_id: int):
+    def remove_vlan(self, vlan_id: int) -> None:
         self._switch.check_feature(SwitchFeature.TAGGED_VLAN)
         self._switch.check_feature(SwitchFeature.VLAN_TABLE)
 
         if vlan_id in self._vlans:
             del self._vlans[vlan_id]
 
-    def add_vlan_member(self, vlan: Union[int, VLAN], port: Port):
+    def add_vlan_member(self, vlan: Union[int, VLAN], port: Port) -> None:
         self._switch.check_feature(SwitchFeature.TAGGED_VLAN)
         self._switch.check_feature(SwitchFeature.VLAN_TABLE)
         if isinstance(vlan, int):
@@ -179,7 +172,7 @@ class TagVlanConfig(SwitchConfig):
         if port not in vlan.members:
             vlan.members.append(port)
 
-    def remove_vlan_member(self, vlan: Union[int, VLAN], port: Port):
+    def remove_vlan_member(self, vlan: Union[int, VLAN], port: Port) -> None:
         self._switch.check_feature(SwitchFeature.TAGGED_VLAN)
         self._switch.check_feature(SwitchFeature.VLAN_TABLE)
         if isinstance(vlan, int):
@@ -188,16 +181,16 @@ class TagVlanConfig(SwitchConfig):
         if port in vlan.members:
             vlan.members.remove(port)
 
-    def set_port_vlan_header_action(self, vlan: int, port: Port, action: VLANHeaderAction):
+    def set_port_vlan_header_action(self, vlan: int, port: Port, action: VLANHeaderAction) -> None:
         port_config = self._port_configs[self._ports().index(port)]
         if port_config.per_vlan_header_action is None:
             port_config.per_vlan_header_action = dict()
         port_config.per_vlan_header_action[vlan] = action
 
-    def reset(self):
+    def reset(self) -> None:
         self._reset = True
 
-    def _check_supports_per_port_vlan_mode(self, mode):
+    def _check_supports_per_port_vlan_mode(self, mode: VLANMode) -> None:
         if mode == VLANMode.DISABLED:
             self._switch.check_feature(SwitchFeature.PER_PORT_VLAN_MODE_DISABLE)
         elif mode == VLANMode.OPTIONAL:
@@ -207,7 +200,7 @@ class TagVlanConfig(SwitchConfig):
         elif mode == VLANMode.STRICT:
             self._switch.check_feature(SwitchFeature.PER_PORT_VLAN_MODE_STRICT)
 
-    def _check_supports_vlan_mode(self, mode):
+    def _check_supports_vlan_mode(self, mode: VLANMode) -> None:
         if mode == VLANMode.OPTIONAL:
             self._switch.check_feature(SwitchFeature.VLAN_MODE_OPTIONAL)
         elif mode == VLANMode.ENABLED:
@@ -215,13 +208,13 @@ class TagVlanConfig(SwitchConfig):
         elif mode == VLANMode.STRICT:
             self._switch.check_feature(SwitchFeature.VLAN_MODE_STRICT)
 
-    def apply_to_switch(self):
+    def apply_to_switch(self) -> None:
         if isinstance(self._switch, IP175G):
             self._apply_to_switch_ip175g()
         else:
             raise NotImplementedError()
 
-    def _apply_to_switch_ip175g(self):
+    def _apply_to_switch_ip175g(self) -> None:  # noqa: C901
         assert isinstance(self._switch, IP175G)
 
         if self._reset:
@@ -269,14 +262,14 @@ class TagVlanConfig(SwitchConfig):
                 port_mode = port_config.mode
             if port_mode == VLANMode.DISABLED:
                 cast(PortListField, self._switch.fields["TAG_VLAN_EN"]).remove_port(port_config.port)
-                if unvid_mode is not None and unvid_mode == False:
+                if unvid_mode is not None and unvid_mode == False:  # noqa: E712
                     unvid_mode_error = True
                 else:
                     unvid_mode = True
                     cast(BitField, self._switch.fields["UNVID_MODE"]).set_value(unvid_mode)
             elif port_mode == VLANMode.OPTIONAL:
                 cast(PortListField, self._switch.fields["TAG_VLAN_EN"]).add_port(port_config.port)
-                if unvid_mode is not None and unvid_mode == False:
+                if unvid_mode is not None and unvid_mode == False:  # noqa: E712
                     unvid_mode_error = True
                 else:
                     unvid_mode = True
@@ -284,7 +277,7 @@ class TagVlanConfig(SwitchConfig):
             elif port_mode == VLANMode.ENABLED:
                 cast(PortListField, self._switch.fields["TAG_VLAN_EN"]).add_port(port_config.port)
                 cast(PortListField, self._switch.fields["VLAN_INGRESS_FILTER"]).remove_port(port_config.port)
-                if unvid_mode is not None and unvid_mode == True:
+                if unvid_mode is not None and unvid_mode == True:  # noqa: E712
                     unvid_mode_error = True
                 else:
                     unvid_mode = False
@@ -292,7 +285,7 @@ class TagVlanConfig(SwitchConfig):
             elif port_mode == VLANMode.STRICT:
                 cast(PortListField, self._switch.fields["TAG_VLAN_EN"]).add_port(port_config.port)
                 cast(PortListField, self._switch.fields["VLAN_INGRESS_FILTER"]).add_port(port_config.port)
-                if unvid_mode is not None and unvid_mode == True:
+                if unvid_mode is not None and unvid_mode == True:  # noqa: E712
                     unvid_mode_error = True
                 else:
                     unvid_mode = False
@@ -330,7 +323,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
     """
     CLI parser for the tag-vlan command.
     """
-    def __init__(self, subparsers, switch_name: AnyStr):
+    def __init__(self, subparsers: argparse.Action, switch_name: AnyStr) -> None:
         super().__init__(subparsers, switch_name)
 
         self._subparser = self._subparsers.add_parser(
@@ -338,7 +331,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
             help="Configure tagged VLAN",
         )
 
-        vlan_range = IntRange(min=0, max=self._switch.max_vlan_id(), name="VLAN ID")
+        vlan_range = IntRange(lower=0, upper=self._switch.max_vlan_id(), name="VLAN ID")
         port_arg = functools.partial(self._switch.get_port)
         port_arg.__name__ = "port"
         port_names = tuple(self._switch.port_names())
@@ -441,7 +434,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                 action="append",
                 required=False,
                 help='''Define header action for the given port. Overrides --header-action for the port.
-                        KEEP: Keep VLAN tag if the packet had it on ingress, do not add it if the packet did not have it.
+                        KEEP: Keep VLAN tag if the packet had it on ingress, do not add it if the packet did not have it
                         ADD: Add VLAN tag to all packets leaving the port.
                         STRIP: Remove VLAN tag from all packets leaving the port.'''
             )
@@ -455,7 +448,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                 required=False,
                 help='''Define header action for the given port and VLAN ID.
                         Overrides --header-action and --port-header-action for the port and VLAN ID.
-                        KEEP: Keep VLAN tag if the packet had it on ingress, do not add it if the packet did not have it.
+                        KEEP: Keep VLAN tag if the packet had it on ingress, do not add it if the packet did not have it
                         ADD: Add VLAN tag to all packets leaving the port.
                         STRIP: Remove VLAN tag from all packets leaving the port.'''
             )
@@ -480,18 +473,18 @@ class TagVlanConfigCLI(SwitchConfigCLI):
             help='Reset the tagged VLAN configuration to default'
         )
 
-        def execute(args: Tuple):
+        def execute(args: Tuple) -> TagVlanConfigCLI:
             try:
                 return self.apply(args)
             except Exception as e:
                 self._subparser.error(str(e))
         self._subparser.set_defaults(execute=execute)
 
-    def apply(self, args: Tuple):
+    def apply(self, args: Tuple) -> 'TagVlanConfigCLI':  # noqa: C901
         cli_options: Dict = vars(args)
         config = TagVlanConfig(self._switch)
 
-        def has_option(option: str):
+        def has_option(option: str) -> None:
             return cli_options.get(option, None) is not None
 
         if has_option('reset'):
@@ -552,7 +545,8 @@ class TagVlanConfigCLI(SwitchConfigCLI):
         for vlan_config in vlan_configs if vlan_configs is not None else list():
             num_vlans += 1
             if num_vlans > self._switch.max_vlans():
-                self._subparser.error("Too many VLAN table entries specified. Maximum is {}".format(self._switch.max_vlans()))
+                self._subparser.error("Too many VLAN table entries specified. Maximum is {}".format(
+                    self._switch.max_vlans()))
             try:
                 vlan_id = int(vlan_config[0])
             except ValueError:
@@ -569,5 +563,5 @@ class TagVlanConfigCLI(SwitchConfigCLI):
 
         return self
 
-    def create_configuration(self):
+    def create_configuration(self) -> None:
         return self._switch.registers_to_commands(leave_out_default=False, only_touched=True)

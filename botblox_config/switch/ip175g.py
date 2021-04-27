@@ -1,34 +1,36 @@
 from typing import List
-from .switch import SwitchChip, SwitchFeature, Port, Register, BitField, BitsField, ShortField, \
-    PortListField, ByteField
+
+from .switch import BitField, BitsField, ByteField, Port, PortListField, Register, ShortField, SwitchChip, SwitchFeature
 
 
 class IP175G(SwitchChip):
     """The Microchip IP175G chip used in Switchblox and Switchblox Nano."""
 
-    def __init__(self, nano: bool = False):
+    def __init__(self, nano: bool = False) -> None:
         self._nano = nano
         super().__init__()
 
     def name(self) -> str:
         return "Switchblox Nano" if self._nano else "Switchblox"
 
-    def _init_features(self):
-        self._features.add(SwitchFeature.TAGGED_VLAN)
-        self._features.add(SwitchFeature.VLAN_TABLE)
-        self._features.add(SwitchFeature.VLAN_MODE_OPTIONAL)
-        self._features.add(SwitchFeature.VLAN_MODE_ENABLE)
-        self._features.add(SwitchFeature.VLAN_MODE_STRICT)
-        self._features.add(SwitchFeature.VLAN_FORCE)
-        self._features.add(SwitchFeature.PER_PORT_VLAN_MODE)
-        self._features.add(SwitchFeature.PER_PORT_VLAN_MODE_DISABLE)
-        self._features.add(SwitchFeature.PER_PORT_VLAN_MODE_OPTIONAL)
-        self._features.add(SwitchFeature.PER_PORT_VLAN_MODE_ENABLE)
-        self._features.add(SwitchFeature.PER_PORT_VLAN_MODE_STRICT)
-        self._features.add(SwitchFeature.PER_PORT_VLAN_FORCE)
-        self._features.add(SwitchFeature.PER_PORT_VLAN_HEADER_ACTION)
+    def _init_features(self) -> None:
+        self._features = {
+            SwitchFeature.TAGGED_VLAN,
+            SwitchFeature.VLAN_TABLE,
+            SwitchFeature.VLAN_MODE_OPTIONAL,
+            SwitchFeature.VLAN_MODE_ENABLE,
+            SwitchFeature.VLAN_MODE_STRICT,
+            SwitchFeature.VLAN_FORCE,
+            SwitchFeature.PER_PORT_VLAN_MODE,
+            SwitchFeature.PER_PORT_VLAN_MODE_DISABLE,
+            SwitchFeature.PER_PORT_VLAN_MODE_OPTIONAL,
+            SwitchFeature.PER_PORT_VLAN_MODE_ENABLE,
+            SwitchFeature.PER_PORT_VLAN_MODE_STRICT,
+            SwitchFeature.PER_PORT_VLAN_FORCE,
+            SwitchFeature.PER_PORT_VLAN_HEADER_ACTION,
+        }
 
-    def _init_ports(self):
+    def _init_ports(self) -> None:
         self._ports.append(Port("1", 2))
         self._ports.append(Port("2", 3))
         self._ports.append(Port("3", 4))
@@ -36,7 +38,7 @@ class IP175G(SwitchChip):
             self._ports.append(Port("4", 6))
             self._ports.append(Port("5", 7))
 
-    def _init_registers(self):
+    def _init_registers(self) -> None:
         self._add_register(Register(23, 0, self))
         self._add_register(Register(23, 1, self))
         self._add_register(Register(23, 2, self))
@@ -56,7 +58,7 @@ class IP175G(SwitchChip):
         for i in range(25):
             self._add_register(Register(24, i, self))
 
-    def _init_fields(self):
+    def _init_fields(self) -> None:
         # Example values of the VLAN-related registries
         # [23, 0, 0, 0],  # [-, VLAN_TABLE_CLR=128|UNVID_MODE=32]  # !UNVID_MODE=VLAN mode->enabled
         # [23, 1, 255, 0],  # [TAG_VLAN_EN=0, VLAN_CLS=0]  # VLAN_CLS=Force VLAN ID
@@ -104,25 +106,26 @@ class IP175G(SwitchChip):
             self._add_field(BitsField(self._registers[24][i + 1], 0, 12, i + 1, 'VID_{:1X}'.format(i)))
 
         for i in range(16):
-            self._add_field(self._create_port_list_field(self._registers[24][17 + (i // 2)], i % 2, True, "VLAN_MEMBER_{:1X}".format(i)))
+            self._add_field(self._create_port_list_field(self._registers[24][17 + (i // 2)], i % 2, True,
+                                                         "VLAN_MEMBER_{:1X}".format(i)))
 
     class IP175GPortListField(PortListField):
-        def __init__(self, register: Register, index: int, ports: List[Port], ports_default: bool, name: str):
+        def __init__(self, register: Register, index: int, ports: List[Port], ports_default: bool, name: str) -> None:
             super().__init__(register, ports, ports_default, name)
             self._base_field = ByteField(register, index, 255 if ports_default else 0, name)
             self._ports = ports if ports_default else list()
 
-        def _add_port(self, port: Port, touch: bool = True):
+        def _add_port(self, port: Port, touch: bool = True) -> None:
             value = self._base_field.get_value()
             value |= 1 << port.id
             self._base_field.set_value(value, touch)
 
-        def _remove_port(self, port: Port, touch: bool = True):
+        def _remove_port(self, port: Port, touch: bool = True) -> None:
             value = self._base_field.get_value()
             value &= ~(1 << port.id)
             self._base_field.set_value(value, touch)
 
-        def _clear(self, touch: bool = True):
+        def _clear(self, touch: bool = True) -> None:
             self._base_field.set_value(0, touch)
 
     def _create_port_list_field(self, register: Register, index: int, ports_default: bool, name: str) -> PortListField:

@@ -16,7 +16,7 @@ class TestSetReset:
         '--reset',
     ]
 
-    def test_reset(self):
+    def test_reset(self) -> None:
         data = get_data_from_cli_args(
             parser=create_parser(self.base_args),
             args=self.base_args,

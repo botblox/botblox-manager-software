@@ -1,17 +1,11 @@
-import subprocess
-from argparse import ArgumentParser
-from functools import reduce
 from typing import (
-    Any,
     AnyStr,
     List,
-    Tuple,
 )
 
 import pytest
-from pytest import CaptureFixture
-
 from botblox_config.cli import create_parser
+from pytest import CaptureFixture
 
 from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args, run_command_to_error
 
