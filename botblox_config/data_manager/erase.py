@@ -1,4 +1,4 @@
-from argparse import Action
+from argparse import Action, Namespace
 from typing import (AnyStr, List, Tuple)
 
 from .switch_config import SwitchConfigCLI
@@ -15,9 +15,9 @@ class EraseConfigCLI(SwitchConfigCLI):
             "erase",
             help="Erase all configuration",
         )
-        self._subparser.set_defaults(execute=lambda args: self.apply(args))
+        self._subparser.set_defaults(execute=self.apply)
 
-    def apply(self, args: Tuple) -> SwitchConfigCLI:
+    def apply(self, args: Namespace) -> SwitchConfigCLI:
         return self
 
     def create_configuration(self) -> List[List[int]]:

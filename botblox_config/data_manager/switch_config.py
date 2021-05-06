@@ -1,4 +1,4 @@
-from argparse import Action
+from argparse import Action, Namespace
 from typing import AnyStr, List, Tuple
 
 from ..switch import create_switch, Port, SwitchChip
@@ -40,7 +40,7 @@ class SwitchConfigCLI:
         self._subparsers = subparsers
         self._switch = create_switch(switch_name)
 
-    def apply(self, args: Tuple) -> 'SwitchConfigCLI':
+    def apply(self, args: Namespace) -> 'SwitchConfigCLI':
         """
         Load the given CLI args.
         :param args: CLI args.

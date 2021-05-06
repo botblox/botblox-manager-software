@@ -1,9 +1,9 @@
-import argparse
 import functools
 import logging
+from argparse import Action, Namespace, SUPPRESS
 from collections import defaultdict
 from enum import Enum
-from typing import (AnyStr, cast, Dict, List, Optional, Tuple, Union)
+from typing import (AnyStr, cast, Dict, List, Optional, Union)
 
 from .argparse_utils import add_multi_argument
 from .switch_config import SwitchConfig, SwitchConfigCLI
@@ -323,7 +323,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
     """
     CLI parser for the tag-vlan command.
     """
-    def __init__(self, subparsers: argparse.Action, switch_name: AnyStr) -> None:
+    def __init__(self, subparsers: Action, switch_name: AnyStr) -> None:
         super().__init__(subparsers, switch_name)
 
         self._subparser = self._subparsers.add_parser(
@@ -342,7 +342,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
             '-D', '--default-vlan',
             type=vlan_range,
             required=False,
-            default=argparse.SUPPRESS,
+            default=SUPPRESS,
             help='''Define default VLAN for all ports. Can be overridden per port by --port-default-vlan.'''
         )
         add_multi_argument(
@@ -470,18 +470,18 @@ class TagVlanConfigCLI(SwitchConfigCLI):
             '-r',
             '--reset',
             action='store_true',
-            default=argparse.SUPPRESS,
+            default=SUPPRESS,
             help='Reset the tagged VLAN configuration to default'
         )
 
-        def execute(args: Tuple) -> TagVlanConfigCLI:
+        def execute(args: Namespace) -> TagVlanConfigCLI:
             try:
                 return self.apply(args)
             except Exception as e:
                 self._subparser.error(str(e))
         self._subparser.set_defaults(execute=execute)
 
-    def apply(self, args: Tuple) -> 'TagVlanConfigCLI':  # noqa: C901
+    def apply(self, args: Namespace) -> 'TagVlanConfigCLI':  # noqa: C901
         cli_options: Dict = vars(args)
         config = TagVlanConfig(self._switch)
 
