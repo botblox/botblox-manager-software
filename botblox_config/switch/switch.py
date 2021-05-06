@@ -210,6 +210,18 @@ class SwitchChip:
         """
         raise NotImplementedError()
 
+    def parse_vlan_id(self, vlan_str: AnyStr) -> int:
+        """
+        Parse VLAN ID from string.
+        :param vlan_str: The string to parse.
+        :return: Numeric representation of the VLAN ID.
+        :raises ValueError: If the value is not convertible to int or if it is out of the valid VLAN ID range.
+        """
+        num = int(vlan_str)  # ValueError can be thrown, but that's expected for non-int inputs
+        if (num < 0) or (num > self.max_vlan_id()):
+            raise ValueError("{} is not valid VLAN ID (max is {})".format(vlan_str, self.max_vlan_id()))
+        return num
+
     def check_vlan_id(self, vlan_id: int) -> None:
         """
         Check whether the given VLAN ID is valid.

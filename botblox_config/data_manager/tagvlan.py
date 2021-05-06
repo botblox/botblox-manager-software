@@ -5,7 +5,7 @@ from collections import defaultdict
 from enum import Enum
 from typing import (AnyStr, cast, Dict, List, Optional, Tuple, Union)
 
-from .argparse_utils import add_multi_argument, IntRange
+from .argparse_utils import add_multi_argument
 from .switch_config import SwitchConfig, SwitchConfigCLI
 from ..switch.ip175g import IP175G
 from ..switch.switch import BitField, BitsField, Port, PortListField, ShortField, SwitchChip, SwitchFeature
@@ -331,7 +331,8 @@ class TagVlanConfigCLI(SwitchConfigCLI):
             help="Configure tagged VLAN",
         )
 
-        vlan_range = IntRange(lower=0, upper=self._switch.max_vlan_id(), name="VLAN ID")
+        vlan_range = functools.partial(self._switch.parse_vlan_id)
+        vlan_range.__name__ = "VLAN ID"
         port_arg = functools.partial(self._switch.get_port)
         port_arg.__name__ = "port"
         port_names = tuple(self._switch.port_names())
@@ -484,7 +485,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
         cli_options: Dict = vars(args)
         config = TagVlanConfig(self._switch)
 
-        def has_option(option: str) -> None:
+        def has_option(option: str) -> bool:
             return cli_options.get(option, None) is not None
 
         if has_option('reset'):
@@ -508,16 +509,15 @@ class TagVlanConfigCLI(SwitchConfigCLI):
             for port in set(self._switch.ports()).intersection(port_options.keys()):
                 config.set_port_config(port, mode=port_options[port])
 
-        if 'force_vlan_id' in cli_options:
-            force_vlan_id = cli_options.get('force_vlan_id', None)
-            if force_vlan_id is not None:
-                if len(force_vlan_id) == 0:
-                    config.set_all_port_force_vlan_id(True)
-                else:
-                    for port in self._switch.ports():
-                        force = port in force_vlan_id
-                        if force:
-                            config.set_port_config(port, force_vlan_id=True)
+        if has_option('force_vlan_id'):
+            force_vlan_id = cli_options.get('force_vlan_id')
+            if len(force_vlan_id) == 0:
+                config.set_all_port_force_vlan_id(True)
+            else:
+                for port in self._switch.ports():
+                    force = port in force_vlan_id
+                    if force:
+                        config.set_port_config(port, force_vlan_id=True)
 
         if has_option('receive_mode'):
             config.set_all_port_receive_mode(cli_options['receive_mode'])

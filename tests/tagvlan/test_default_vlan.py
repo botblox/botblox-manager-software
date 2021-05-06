@@ -82,7 +82,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "tag-vlan: error: argument -D/--default-vlan: invalid VLAN ID(0,4096) value: 'WRONG'"
+        expected_stderr_message = "tag-vlan: error: argument -D/--default-vlan: invalid VLAN ID value: 'WRONG'"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
@@ -101,7 +101,7 @@ class TestSetGroups:
         captured: CaptureFixture[AnyStr] = capfd.readouterr()
         assert captured.out == ''
 
-        expected_stderr_message = "tag-vlan: error: argument -D/--default-vlan: invalid VLAN ID(0,4096) value: '5000'"
+        expected_stderr_message = "tag-vlan: error: argument -D/--default-vlan: invalid VLAN ID value: '5000'"
         actual_stderr: str = captured.err
 
         assert actual_stderr.find(expected_stderr_message) > -1
