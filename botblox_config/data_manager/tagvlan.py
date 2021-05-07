@@ -3,14 +3,14 @@ import logging
 from argparse import Action, Namespace, SUPPRESS
 from collections import defaultdict
 from enum import Enum
-from typing import (AnyStr, cast, Dict, List, Optional, Union)
+from typing import (cast, Dict, List, Optional, Union)
 
 from .argparse_utils import add_multi_argument
 from .switch_config import SwitchConfig, SwitchConfigCLI
-from ..switch.ip175g import IP175G
-from ..switch.switch import SwitchChip, SwitchFeature
 from ..switch import Port
 from ..switch.fields import BitField, BitsField, PortListField, ShortField
+from ..switch.ip175g import IP175G
+from ..switch.switch import SwitchChip, SwitchFeature
 
 
 class VLAN:

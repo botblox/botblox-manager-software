@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import AnyStr, Dict, Generic, Iterable, List, Optional, Set, Type, TypeVar
+from typing import AnyStr, Dict, Generic, Iterable, List, Set, Type, TypeVar
 
 from .config_writer import ConfigWriter, TestWriter
 from .fields import ConfigField

@@ -1,7 +1,7 @@
 import argparse
 from argparse import Action, ArgumentParser, Namespace
 from enum import Enum
-from typing import Any, AnyStr, Callable, Dict, List, Optional, Sequence, Union
+from typing import Any, AnyStr, Callable, Dict, List, Sequence, Union
 
 
 def _copy_items(items: Union[List, Dict]) -> Union[List, Dict]:

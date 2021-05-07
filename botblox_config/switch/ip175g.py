@@ -80,7 +80,7 @@ class IP175G(SwitchChip[MIIRegisterAddress, MIIRegister, List[List[int]]]):
         # [24, 2, 1, 0],  # VID_1=2
         # [24, 17, 0b10001000, 255],  # [VLAN_MEMBER_0=FF, VLAN_MEMBER_1=FF]
 
-        Addr = MIIRegisterAddress
+        Addr = MIIRegisterAddress  # noqa: N806
 
         self._add_field(BitField(self._registers[Addr(23, 0)], 13, False, 'UNVID_MODE'))
         self._add_field(BitField(self._registers[Addr(23, 0)], 15, False, 'VLAN_TABLE_CLR'))

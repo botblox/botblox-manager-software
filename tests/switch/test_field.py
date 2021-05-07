@@ -1,9 +1,9 @@
 from typing import List, Optional
 
-from botblox_config.switch.switch import SwitchChip
-from botblox_config.switch import Port
-from botblox_config.switch.register import MIIRegister
 from botblox_config.switch.fields import BitField, BitsField, ByteField, PortListField, ShortField
+from botblox_config.switch.port import Port
+from botblox_config.switch.register import MIIRegister
+from botblox_config.switch.switch import SwitchChip
 
 
 class StubPortListField(PortListField):
@@ -38,7 +38,8 @@ class ChipStub(SwitchChip):
     def _init_fields(self) -> None:
         pass
 
-    def _create_port_list_field(self, register: MIIRegister, index: int, ports_default: bool, name: str) -> PortListField:
+    def _create_port_list_field(self, register: MIIRegister, index: int, ports_default: bool, name: str) \
+            -> PortListField:
         return StubPortListField(register, index, self._ports, ports_default, name)
 
     def register_to_command(self, register: 'MIIRegister', leave_out_default: bool = True) -> Optional[List[int]]:
