@@ -1,12 +1,13 @@
-from typing import List, Optional
+from typing import List, Optional, Type
 
-from .switch import SwitchChip, SwitchFeature
+from .config_writer import ConfigWriter, UARTWriter
+from .fields import BitField, BitsField, ByteField, PortListField, ShortField
 from .port import Port
 from .register import MIIRegister, MIIRegisterAddress
-from .fields import BitField, BitsField, ByteField, PortListField, ShortField
+from .switch import SwitchChip, SwitchFeature
 
 
-class IP175G(SwitchChip):
+class IP175G(SwitchChip[MIIRegisterAddress, MIIRegister, List[List[int]]]):
     """The Microchip IP175G chip used in Switchblox and Switchblox Nano."""
 
     def __init__(self, nano: bool = False) -> None:
@@ -15,6 +16,9 @@ class IP175G(SwitchChip):
 
     def name(self) -> str:
         return "Switchblox Nano" if self._nano else "Switchblox"
+
+    def _get_config_writer_type(self) -> Type[ConfigWriter]:
+        return UARTWriter
 
     def _init_features(self) -> None:
         self._features = {

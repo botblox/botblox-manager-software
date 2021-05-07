@@ -56,8 +56,6 @@ class Register(Generic[AddressType]):
     A configuration register on the switch.
     """
 
-    Address = AddressType
-
     def __init__(self, address: AddressType, num_data_bytes: int, byte_order: ByteOrder = ByteOrder.LITTLE_ENDIAN) \
             -> None:
         """

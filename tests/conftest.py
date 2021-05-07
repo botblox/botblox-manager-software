@@ -4,6 +4,8 @@ import sys
 from functools import reduce
 from typing import Any, List, Tuple
 
+from botblox_config.switch import SwitchChip
+
 
 def assert_ip175g_command_is_correct_type(
         *,
@@ -18,10 +20,10 @@ def assert_ip175g_command_is_correct_type(
 
 def get_data_from_cli_args(
     *,
-    parser: argparse.ArgumentParser,
+    parser: Tuple[argparse.ArgumentParser, SwitchChip],
     args: List[str],
 ) -> List[List[int]]:
-    parsed_args = parser.parse_args(args)
+    parsed_args = parser[0].parse_args(args)
     config = parsed_args.execute(parsed_args)
     return config.create_configuration()
 

@@ -325,8 +325,8 @@ class TagVlanConfigCLI(SwitchConfigCLI):
     """
     CLI parser for the tag-vlan command.
     """
-    def __init__(self, subparsers: Action, switch_name: AnyStr) -> None:
-        super().__init__(subparsers, switch_name)
+    def __init__(self, subparsers: Action, switch: SwitchChip) -> None:
+        super().__init__(subparsers, switch)
 
         self._subparser = self._subparsers.add_parser(
             "tag-vlan",
@@ -565,5 +565,5 @@ class TagVlanConfigCLI(SwitchConfigCLI):
 
         return self
 
-    def create_configuration(self) -> None:
+    def create_configuration(self) -> List[List[int]]:
         return self._switch.get_commands(leave_out_default=False, only_touched=True)

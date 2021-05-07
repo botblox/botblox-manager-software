@@ -1,9 +1,10 @@
 from enum import Enum
-from typing import AnyStr, Dict, Iterable, List, Set
+from typing import AnyStr, Dict, Generic, Iterable, List, Optional, Set, Type, TypeVar
 
+from .config_writer import ConfigWriter, TestWriter
+from .fields import ConfigField
 from .port import Port
 from .register import Register, RegisterAddress
-from .fields import ConfigField
 
 
 class SwitchFeature(Enum):
@@ -24,14 +25,19 @@ class SwitchFeature(Enum):
     PER_VLAN_HEADER_ACTION = "VLAN header action per port and VLAN"
 
 
-class SwitchChip:
+RegisterAddressType = TypeVar('RegisterAddressType', bound=RegisterAddress)
+RegisterType = TypeVar('RegisterType', bound=Register)
+CommandType = TypeVar('CommandType')
+
+
+class SwitchChip(Generic[RegisterAddressType, RegisterType, CommandType]):
     """
     Representation of a switch chip and its configuration fields and registers.
     """
     def __init__(self) -> None:
         self._features: Set[SwitchFeature] = set()
         self._ports: List[Port] = list()
-        self._registers: Dict[RegisterAddress, Register] = dict()
+        self._registers: Dict[RegisterAddressType, RegisterType] = dict()
         self.fields: Dict[str, ConfigField] = dict()
 
         self._init_features()
@@ -90,14 +96,38 @@ class SwitchChip:
         """
         return map(lambda p: p.name, self._ports)
 
-    def get_commands(self, leave_out_default: bool = True, only_touched: bool = False) -> List[List[int]]:
+    def get_commands(self, leave_out_default: bool = True, only_touched: bool = False) -> CommandType:
         """
         Convert all registers into "commands" for botblox firmware.
         :param leave_out_default: If true, returns only the registers with value different from their default.
         :param only_touched: If true, returns only registers that were touched.
-        :return: List of firmware "commands".
+        :return: Firmware "commands".
         """
         raise NotImplementedError()
+
+    def get_config_writer_description(self) -> str:
+        """
+        :return: Human-readable short description of the device that writes configuration to the device. E.g. "UART to
+                 USB converter"
+        """
+        return self._get_config_writer_type().device_description()
+
+    def _get_config_writer_type(self) -> Type[ConfigWriter]:
+        """
+        :return: Type of the config writer.
+        """
+        raise NotImplementedError()
+
+    def get_config_writer(self, device_name: str) -> ConfigWriter:
+        """
+        Return an instance of config writer for this switch.
+        :param device_name: Name of the config writer device to use.
+        :return: The config writer.
+        :raises ValueError: If the passed device is not valid.
+        """
+        if device_name == "test":
+            return TestWriter(device_name)
+        return self._get_config_writer_type()(device_name)
 
     def _init_features(self) -> None:
         """
@@ -123,13 +153,13 @@ class SwitchChip:
         """
         raise NotImplementedError()
 
-    def get_registers(self) -> Dict[RegisterAddress, Register]:
+    def get_registers(self) -> Dict[RegisterAddressType, RegisterType]:
         """
         :return: All registers of the switch.
         """
         return self._registers
 
-    def _add_register(self, register: Register) -> None:
+    def _add_register(self, register: RegisterType) -> None:
         """
         Add the given register to this switch. This method should only be called during initialization.
         :param register: The register to add.
@@ -143,7 +173,8 @@ class SwitchChip:
         """
         self.fields[field.get_name()] = field
 
-    def _create_port_list_field(self, register: Register, index: int, ports_default: bool, name: str) -> ConfigField:
+    def _create_port_list_field(self, register: RegisterType, index: int, ports_default: bool, name: str) \
+            -> ConfigField:
         """
         Create a field that represents a bitmask (or other representation) of a set/list of ports.
         :param register: The register that backs this list.

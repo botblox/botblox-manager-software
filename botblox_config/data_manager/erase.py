@@ -1,15 +1,16 @@
 from argparse import Action, Namespace
-from typing import (AnyStr, List, Tuple)
+from typing import (List)
 
 from .switch_config import SwitchConfigCLI
+from ..switch import SwitchChip
 
 
 class EraseConfigCLI(SwitchConfigCLI):
     """
     The "erase" action that removes all stored items from the EEPROM memory.
     """
-    def __init__(self, subparsers: Action, switch_name: AnyStr) -> None:
-        super().__init__(subparsers, switch_name)
+    def __init__(self, subparsers: Action, switch: SwitchChip) -> None:
+        super().__init__(subparsers, switch)
 
         self._subparser = self._subparsers.add_parser(
             "erase",

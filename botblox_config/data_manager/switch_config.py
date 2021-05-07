@@ -1,7 +1,7 @@
 from argparse import Action, Namespace
-from typing import AnyStr, List, Tuple
+from typing import List
 
-from ..switch import create_switch, Port, SwitchChip
+from ..switch import Port, SwitchChip
 
 
 class SwitchConfig:
@@ -36,9 +36,9 @@ class SwitchConfigCLI:
     """
     Command-Line Interface for the semantic switch configuration.
     """
-    def __init__(self, subparsers: Action, switch_name: AnyStr) -> None:
+    def __init__(self, subparsers: Action, switch: SwitchChip) -> None:
         self._subparsers = subparsers
-        self._switch = create_switch(switch_name)
+        self._switch = switch
 
     def apply(self, args: Namespace) -> 'SwitchConfigCLI':
         """
@@ -48,6 +48,8 @@ class SwitchConfigCLI:
         """
         raise NotImplementedError()
 
+    # TODO (anyone): when all commands are converted to use the switch class, this method can be left out and
+    #                switch.get_commands() can be called directly from the CLI class.
     def create_configuration(self) -> List[List[int]]:
         """
         :return: A SwitchConfig parsed from the CLI args passed previously to apply().
