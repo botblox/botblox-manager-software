@@ -368,7 +368,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                     ENABLED: Packets from VLANs not in VLAN table are dropped.
                     STRICT: Same as ENABLED, but also checks ingress port in VLAN table.'''
         )
-        if self._switch is None or self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_MODE):
+        if self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_MODE):
             add_multi_argument(
                 self._subparser,
                 '-m', '--port-vlan-mode',
@@ -382,7 +382,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                         ENABLED: Packets from VLANs not in VLAN table are dropped.
                         STRICT: Same as ENABLED, but also checks ingress port in VLAN table.'''
             )
-        if self._switch is None or self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_FORCE):
+        if self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_FORCE):
             self._subparser.add_argument(
                 '-f', '--force-vlan-id',
                 nargs="*",
@@ -405,7 +405,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                     ONLY_TAGGED: Only packets with VLAN tag are accepted.
                     ONLY_UNTAGGED: Only packets without VLAN tag are accepted.'''
         )
-        if self._switch is None or self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_RECEIVE_MODE):
+        if self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_RECEIVE_MODE):
             add_multi_argument(
                 self._subparser,
                 '-t', '--port-receive-mode',
@@ -428,7 +428,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                     ADD: Add VLAN tag to all packets leaving the switch.
                     STRIP: Remove VLAN tag from all packets leaving the switch.'''
         )
-        if self._switch is None or self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_HEADER_ACTION):
+        if self._switch.has_feature(SwitchFeature.PER_PORT_VLAN_HEADER_ACTION):
             add_multi_argument(
                 self._subparser,
                 '-a', '--port-header-action',
@@ -441,7 +441,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                         ADD: Add VLAN tag to all packets leaving the port.
                         STRIP: Remove VLAN tag from all packets leaving the port.'''
             )
-        if self._switch is None or self._switch.has_feature(SwitchFeature.PER_VLAN_HEADER_ACTION):
+        if self._switch.has_feature(SwitchFeature.PER_VLAN_HEADER_ACTION):
             add_multi_argument(
                 self._subparser,
                 '-p', '--port-vlan-header-action',
@@ -456,7 +456,7 @@ class TagVlanConfigCLI(SwitchConfigCLI):
                         STRIP: Remove VLAN tag from all packets leaving the port.'''
             )
 
-        if self._switch is None or self._switch.has_feature(SwitchFeature.VLAN_TABLE):
+        if self._switch.has_feature(SwitchFeature.VLAN_TABLE):
             self._subparser.add_argument(
                 '-v', '--vlan',
                 nargs='+',
