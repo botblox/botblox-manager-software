@@ -3,75 +3,55 @@
 import argparse
 import logging
 import sys
-import time
-from typing import List
-
-import serial
+from typing import List, Tuple
 
 from .data_manager import (
+    EraseConfigCLI,
     PortMirrorConfig,
+    TagVlanConfigCLI,
     VlanConfig,
 )
+from .switch import create_switch, SwitchChip
 
 logging.basicConfig(level=logging.DEBUG)
 
 
-def write_data_to_serial(
-    data: List[List],
-    device_name: str,
-) -> bool:
-    """Write data commands to serial port.
-
-    Write data to serial port which the UART converter is connected to. The STM32 MCU
-    on the SwitchBlox will then be interrupted and carry out the commands
-
-    :param List[List] data: Commands created to write to STM32 MCU
-    :param Optional[str] device_name: serial port device name (default: '/dev/ttyUSB0')
-    :return: Flag to indicate whether the write data to serial was successful or not
-    :rtype: bool
-    """
-    ser = serial.Serial(
-        port=device_name,
-        baudrate=115200,
-        bytesize=serial.EIGHTBITS,
-        parity=serial.PARITY_NONE,
-        timeout=20,
-        write_timeout=2,
-    )
-
-    for command in data:
-        x = bytes(command)
-        ser.write(x)
-        time.sleep(0.1)
-
-    condition = ser.read(size=1)
-    ser.close()
-
-    try:
-        condition = list(condition)[0]
-    except IndexError:
-        logging.error('Failed to read condition message from board')
-        return False
-    else:
-        if condition == 1:
-            logging.info('Success setting configuration in EEPROM')
-            return True
-        elif condition == 2:
-            logging.error('Failed saving configuration in EEPROM')
-            return False
-
-
-def create_parser() -> argparse.ArgumentParser:
+def create_parser(argv: List[str] = None) -> Tuple[argparse.ArgumentParser, SwitchChip]:
     """Define all cli parser and subparsers here."""
     parser = argparse.ArgumentParser(
         description='CLI for configuring SwitchBlox managed settings',
         epilog='Please open any issue on https://github.com/botblox/botblox-manager-software/ if there is a problem',
     )
+
+    parser.add_argument(
+        '-S',
+        '--switch',
+        type=str,
+        choices=("switchblox", "switchblox_nano", "nano"),
+        help='Select the type of the connected switch (default is switchblox)',
+        nargs='?',
+        default="switchblox",
+        required=False,
+    )
+
+    try:
+        if argv is None:
+            argv = sys.argv
+        switch_namespace, _ = parser.parse_known_args(list(filter(lambda a: a != '-h' and a != '--help', argv)))
+        switch_name = switch_namespace.switch
+    except argparse.ArgumentError as e:
+        switch_name = "switchblox"
+        logging.error(str(e))
+
+    switch = create_switch(switch_name)
+
     parser.add_argument(
         '-D',
         '--device',
-        type=str,
-        help='Select the USB-to-UART converter device',
+        type=switch.get_config_writer,
+        help='Select the {} device. Set to "test" to disable actual writing to the device.'.format(
+            switch.get_config_writer_description()
+        ),
         nargs='?',
         required=True,
     )
@@ -171,11 +151,15 @@ def create_parser() -> argparse.ArgumentParser:
     # (2)
     portmirror_parser_mutex_grouping.set_defaults(execute=PortMirrorConfig)
 
-    return parser
+    commands = list()
+    commands.append(TagVlanConfigCLI(subparsers, switch))
+    commands.append(EraseConfigCLI(subparsers, switch))
+
+    return parser, switch
 
 
 def cli() -> None:
-    parser = create_parser()
+    parser, switch = create_parser()
 
     if len(sys.argv) < 2:
         sys.argv.append('--help')
@@ -201,9 +185,13 @@ def cli() -> None:
     logging.debug('------------------------------------------')
 
     device_name = args.device
-    is_success = write_data_to_serial(data=data, device_name=device_name)
+    if device_name != "test":
+        writer = switch.get_config_writer(device_name)
+        is_success = writer.write(data)
 
-    if is_success:
-        logging.info('Successful configuration')
+        if is_success:
+            logging.info('Successful configuration')
+        else:
+            logging.error('Failed to configure - check logs')
     else:
-        logging.error('Failed to configure - check logs')
+        logging.info('Test device used, no data were written to any serial port')
