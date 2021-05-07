@@ -1,5 +1,6 @@
 from .all import create_switch
-from .switch import Port, SwitchChip, SwitchFeature
+from .switch import SwitchChip, SwitchFeature
+from .port import Port
 
 __all__ = [
     SwitchChip,

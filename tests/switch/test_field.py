@@ -1,11 +1,13 @@
-from typing import List
+from typing import List, Optional
 
-from botblox_config.switch.switch import BitField, BitsField, ByteField, Port, PortListField, Register, ShortField, \
-    SwitchChip
+from botblox_config.switch.switch import SwitchChip
+from botblox_config.switch import Port
+from botblox_config.switch.register import MIIRegister
+from botblox_config.switch.fields import BitField, BitsField, ByteField, PortListField, ShortField
 
 
 class StubPortListField(PortListField):
-    def __init__(self, register: Register, index: int, ports: List[Port], ports_default: bool, name: str) -> None:
+    def __init__(self, register: MIIRegister, index: int, ports: List[Port], ports_default: bool, name: str) -> None:
         super().__init__(register, ports, ports_default, name)
 
     def _add_port(self, port: Port, touch: bool = True) -> None:
@@ -36,13 +38,24 @@ class ChipStub(SwitchChip):
     def _init_fields(self) -> None:
         pass
 
-    def _create_port_list_field(self, register: Register, index: int, ports_default: bool, name: str) -> PortListField:
+    def _create_port_list_field(self, register: MIIRegister, index: int, ports_default: bool, name: str) -> PortListField:
         return StubPortListField(register, index, self._ports, ports_default, name)
+
+    def register_to_command(self, register: 'MIIRegister', leave_out_default: bool = True) -> Optional[List[int]]:
+        """
+        Convert the given register into a "command" for botblox firmware.
+        :param register: The register to convert.
+        :param leave_out_default: If true, returns None in case the register has its default value.
+        :return: The firmware "command".
+        """
+        if leave_out_default and register.is_default():
+            return None
+        return [register.address.phy, register.address.mii] + register.as_bytes()
 
 
 class TestField:
     def test_bit_field(self) -> None:
-        r = Register(1, 2, ChipStub())
+        r = MIIRegister(1, 2)
         f = BitField(r, 0, False, "test")
 
         assert f.get_name() == "test"
@@ -81,7 +94,7 @@ class TestField:
         assert r.as_number() == 0b0000_0100_0000_0001
 
     def test_bits_field(self) -> None:
-        r = Register(1, 2, ChipStub())
+        r = MIIRegister(1, 2)
         f = BitsField(r, 6, 4, 0b0000, "test")
 
         assert f.get_name() == "test"
@@ -128,7 +141,7 @@ class TestField:
         assert r.as_number() == 0b0000_0001_1001_1100
 
     def test_byte_field(self) -> None:
-        r = Register(1, 2, ChipStub())
+        r = MIIRegister(1, 2)
         f = ByteField(r, 0, 0, "test")
 
         assert f.get_name() == "test"
@@ -167,7 +180,7 @@ class TestField:
         assert r.as_number() == 0xDDCC
 
     def test_short_field(self) -> None:
-        r = Register(1, 2, ChipStub())
+        r = MIIRegister(1, 2)
         f = ShortField(r, 0, 0, "test")
 
         assert f.get_name() == "test"
@@ -189,7 +202,7 @@ class TestField:
         switch = ChipStub()
         assert len(switch.ports()) == 3
 
-        r = Register(1, 2, switch)
+        r = MIIRegister(1, 2)
         f = switch._create_port_list_field(r, 0, False, "test")
 
         assert f.get_name() == "test"

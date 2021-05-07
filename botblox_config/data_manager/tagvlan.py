@@ -8,7 +8,9 @@ from typing import (AnyStr, cast, Dict, List, Optional, Union)
 from .argparse_utils import add_multi_argument
 from .switch_config import SwitchConfig, SwitchConfigCLI
 from ..switch.ip175g import IP175G
-from ..switch.switch import BitField, BitsField, Port, PortListField, ShortField, SwitchChip, SwitchFeature
+from ..switch.switch import SwitchChip, SwitchFeature
+from ..switch import Port
+from ..switch.fields import BitField, BitsField, PortListField, ShortField
 
 
 class VLAN:
@@ -564,4 +566,4 @@ class TagVlanConfigCLI(SwitchConfigCLI):
         return self
 
     def create_configuration(self) -> None:
-        return self._switch.registers_to_commands(leave_out_default=False, only_touched=True)
+        return self._switch.get_commands(leave_out_default=False, only_touched=True)
