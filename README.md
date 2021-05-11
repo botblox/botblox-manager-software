@@ -104,7 +104,7 @@ You'll need to install Python version 3.6+ in order to use this application.
 <!-- USAGE EXAMPLES -->
 ## Usage
 
-Before using the software, it is recommended that you create a python virtual environment in the project directory that you use. There are multiple ways to do this. The easiest way to do this is using the `venv` module, which is part of the Python standard library. You can check the docks [here](https://docs.python.org/3/library/venv.html).
+Before using the software, it is recommended that you create a python virtual environment in the project directory that you use. There are multiple ways to do this. The easiest way to do this is using the `venv` module, which is part of the Python standard library. You can check the docs [here](https://docs.python.org/3/library/venv.html).
 
 In short;
 

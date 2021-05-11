@@ -2,19 +2,18 @@ from typing import List
 
 from botblox_config.cli import create_parser
 
-from ..conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args
+from .conftest import assert_ip175g_command_is_correct_type, get_data_from_cli_args
 
 
-class TestSetReset:
+class TestErase:
     package: List[str] = ['botblox']
     base_args: List[str] = [
         '--device',
         'test',
-        'vlan',
-        '--reset',
+        'erase',
     ]
 
-    def test_reset(
+    def test_erase(
         self,
     ) -> None:
         data = get_data_from_cli_args(
@@ -23,5 +22,5 @@ class TestSetReset:
         )
         assert_ip175g_command_is_correct_type(data=data)
 
-        expected_result = [[23, 16, 255, 255], [23, 17, 255, 0], [23, 18, 255, 255]]
+        expected_result = [[101, 0, 0, 0]]
         assert data == expected_result
