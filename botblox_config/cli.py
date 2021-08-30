@@ -186,7 +186,7 @@ def cli() -> None:
 
     device_name = args.device
     if device_name != "test":
-        writer = switch.get_config_writer(device_name)
+        writer = args.device
         is_success = writer.write(data)
 
         if is_success:
